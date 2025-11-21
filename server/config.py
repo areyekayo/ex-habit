@@ -1,6 +1,3 @@
-# Standard library imports
-
-# Remote library imports
 from flask import Flask
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -10,9 +7,6 @@ from sqlalchemy import MetaData
 from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 
-# Local imports
-
-# Instantiate app, set attributes
 app = Flask(__name__)
 app.secret_key = b';\x9c\xe1`\\\xb2\x16OOT$\xe4\xd3d\xa2\x9a'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -24,8 +18,8 @@ metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
 })
 db = SQLAlchemy(metadata=metadata)
-migrate = Migrate(app, db)
 db.init_app(app)
+migrate = Migrate(app, db)
 ma = Marshmallow(app)
 
 # Instantiate REST API
