@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-from flask import request
+from flask import request, make_response
 from flask_restful import Resource
-
-from config import app, db, api
-from flask_login import login_user, login_required, current_user
+from config import app, db, api, ma
+from flask_login import login_user, login_required, current_user, logout_user
 from auth import login_manager
-
 from models import User
 
 @app.route('/')
@@ -25,10 +23,37 @@ class Login(Resource):
         
         if user.authenticate(password):
             login_user(user)
-            return user.to_dict, 200
+            return make_response(user_schema.dump(user), 200)
+        
+class Logout(Resource):
+    @login_required
+    def delete(self):
+        logout_user()
+        return {'message': 'Logged out'}, 204
+    
+class UserSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = User
+        load_instance = True
+    
+    id = ma.auto_field()
+    username = ma.auto_field()
+
+    url = ma.Hyperlinks(
+        {
+            "self": ma.URLFor(
+                "login",
+                values=dict(id="<id>"))
+        }
+    )
+
+user_schema = UserSchema()
+
 
 
 api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
 

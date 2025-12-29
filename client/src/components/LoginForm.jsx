@@ -57,7 +57,7 @@ function LoginForm() {
                 <label htmlFor='username'>Username</label>
                 <input
                     id="username"
-                    name="name"
+                    name="username"
                     onChange={(e) => {
                         setBackendErrors({});
                         formik.handleChange(e);

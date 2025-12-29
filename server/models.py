@@ -29,3 +29,6 @@ class User(db.Model, UserMixin):
         return bcrypt.check_password_hash(
             self._password_hash, password.encode('utf-8')
         )
+    
+
+
