@@ -22,7 +22,7 @@ class Login(Resource):
             return {'errors': {'login': ['Invalid username or password']}}, 401
         
         if user.authenticate(password):
-            login_user(user)
+            login_user(user, remember=True)
             return make_response(user_schema.dump(user), 200)
         
 class Logout(Resource):
