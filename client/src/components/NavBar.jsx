@@ -20,12 +20,12 @@ function NavBar() {
 
     return (
         <nav>
-            <NavLink>Home</NavLink>
+            <NavLink to="/home">Home</NavLink>
             <NavLink>Collection</NavLink>
             {user ? (
                 <button onClick={handleLogout}>Logout</button>
             )
-                : (<NavLink to="/login"/>)
+                : (<NavLink to="/login">Login</NavLink>)
             }
         </nav>
     )

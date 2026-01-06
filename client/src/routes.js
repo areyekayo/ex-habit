@@ -1,4 +1,5 @@
 import App from "./components/App" ;
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 
 const routes = [
@@ -10,6 +11,10 @@ const routes = [
                 path: "/login",
                 element: <Login />
             },
+            {
+                path: "/home",
+                element: <Home />
+            }
         ]
     }
 ]

@@ -7,13 +7,13 @@ import { UserContext } from "../context/UserContext";
 function App() {
   const {user, isLoading} = useContext(UserContext)
 
-  //const location = useLocation();
+  const location = useLocation();
 
   if (isLoading) {
     return null;
   }
 
- // if (!user && location.pathname !== "/login" ) return <Navigate to="/login" />
+ if (!user && location.pathname !== "/login" ) return <Navigate to="/login" />
 
   return (
     <div>
