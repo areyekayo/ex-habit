@@ -1,9 +1,11 @@
-import {useState} from "react";
+import {useState, useContext} from "react";
 import {useFormik} from "formik" ;
 import * as yup from "yup";
+import { UserContext } from "../context/UserContext";
 
 function LoginForm() {
     const [backendErrors, setBackendErrors] = useState({});
+    const {onLogin} = useContext(UserContext);
 
     const formSchema = yup.object().shape({
             username: yup.string().required("Must enter username"),
@@ -29,7 +31,7 @@ function LoginForm() {
                     const user = await res.json();
                     setBackendErrors({});
                     console.log(`user: ${user}`)
-                    // onLogin(user) -- replace with async thunk dispatch?
+                    onLogin(user)
                 } else {
                     const errorData = await res.json();
                     if (errorData.errors?.login){

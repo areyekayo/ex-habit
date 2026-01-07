@@ -12,7 +12,7 @@ function UserProvider({children}) {
         setIsLoading(false);
     }
 
-    const onLogout = (user) => {
+    const onLogout = () => {
         setUser(null);
     }
 
