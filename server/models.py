@@ -1,6 +1,7 @@
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
+from sqlalchemy.orm import validates
 
 from config import db, bcrypt
 
@@ -30,5 +31,25 @@ class User(db.Model, UserMixin):
             self._password_hash, password.encode('utf-8')
         )
     
+class Behavior(db.Model):
+    __tablename__ = "behaviors"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True, nullable=False)
+    description = db.Column(db.String)
+    type = db.Column(db.String)
+
+    def __repr__(self):
+        return f"<Behavior '{self.name}', id: {self.id}, type: {self.type}, {self.description}"
+    
+    @validates('name')
+    def validate_name(self, key, name):
+        if not (5 <= len(name) <= 100):
+            raise ValueError("Name must be between 5 and 100 characters")
+        return name
+    
+
+
+
 
 
