@@ -49,6 +49,12 @@ class UserSchema(ma.SQLAlchemySchema):
 
 user_schema = UserSchema()
 
+class CurrentUser(Resource):
+    @login_required
+    def get(self):
+        return user_schema.dump(current_user)
+
+
 class BehaviorSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Behavior
@@ -82,11 +88,10 @@ class Behaviors(Resource):
         return response
 
 
-
-
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(Behaviors, '/behaviors')
+api.add_resource(CurrentUser, '/current_user')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

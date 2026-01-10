@@ -16,6 +16,23 @@ function UserProvider({children}) {
         setUser(null);
     }
 
+    useEffect(() => {
+        fetch("/current_user", {credentials: "include"})
+        .then(r => {
+            if (r.ok) return r.json();
+            throw new Error("Not logged in");
+        })
+        .then(user => {
+            setUser(user);
+        })
+        .catch(() => {
+            setUser(null);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        })
+    },[])
+
 
     return <UserContext.Provider value={{user, onLogin, onLogout}}>{children}</UserContext.Provider>
 
