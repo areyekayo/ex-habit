@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import { useContext } from "react";
 
+
 function NavBar() {
     const navigate = useNavigate()
 
@@ -21,7 +22,7 @@ function NavBar() {
     return (
         <nav>
             <NavLink to="/home">Home</NavLink>
-            <NavLink>Collection</NavLink>
+            <NavLink to="/behaviors">Behaviors</NavLink>
             {user ? (
                 <button onClick={handleLogout}>Logout</button>
             )

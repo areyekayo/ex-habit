@@ -1,7 +1,7 @@
 import App from "./components/App" ;
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-
+import BehaviorCollection from "./components/BehaviorCollection";
 const routes = [
     {
         path:"/",
@@ -14,6 +14,10 @@ const routes = [
             {
                 path: "/home",
                 element: <Home />
+            },
+            {
+                path: "/behaviors",
+                element: <BehaviorCollection />
             }
         ]
     }
