@@ -2,6 +2,8 @@ import App from "./components/App" ;
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import BehaviorCollection from "./components/BehaviorCollection";
+import BehaviorCard from "./components/BehaviorCard";
+
 const routes = [
     {
         path:"/",
@@ -18,6 +20,10 @@ const routes = [
             {
                 path: "/behaviors",
                 element: <BehaviorCollection />
+            },
+            {
+                path: "/behaviors/:id",
+                element: <BehaviorCard />
             }
         ]
     }

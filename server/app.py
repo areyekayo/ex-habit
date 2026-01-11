@@ -69,7 +69,7 @@ class BehaviorSchema(ma.SQLAlchemySchema):
         {
             "self": ma.URLFor(
                 "behaviors",
-                values=dict(id="<id>", name="<name>", description="<description>", type="<type>")
+                values=dict(id="<id>")
             )
         }
     )
