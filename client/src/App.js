@@ -1,7 +1,7 @@
 import {useContext } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
-import NavBar from './NavBar';
-import { UserContext } from "../context/UserContext";
+import NavBar from './components/NavBar';
+import { UserContext } from "./context/UserContext";
 
 function App() {
   const {user, isLoading} = useContext(UserContext)

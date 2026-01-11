@@ -1,8 +1,8 @@
-import App from "./components/App" ;
+import App from "./App" ;
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import BehaviorCollection from "./components/BehaviorCollection";
-import BehaviorCard from "./components/BehaviorCard";
+import BehaviorCollection from "./features/behaviors/BehaviorCollection";
+import BehaviorCard from "./features/behaviors/BehaviorCard";
 
 const routes = [
     {

@@ -1,14 +1,16 @@
 import { useParams } from "react-router-dom";
-import {useContext} from "react";
-import { BehaviorContext } from "../context/BehaviorContext";
+import { useSelector } from "react-redux";
 
 function BehaviorCard(){
-    const {behaviors} = useContext(BehaviorContext);
-
     const {id} = useParams();
     const behaviorId = parseInt(id, 10);
 
-    const behavior = behaviors.find((b) => b.id === behaviorId);
+    const behavior = useSelector(state => 
+        state.behaviors.list.find(b => b.id === behaviorId)
+    );
+
+    if (!behavior) return <div>Behavior not found</div>;
+    
 
     return (
         <>

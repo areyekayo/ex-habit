@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
 import { BehaviorProvider } from "./context/BehaviorContext";
 import routes from "./routes";
+import { store } from "./store";
+import {Provider} from 'react-redux';
 
 const router = createBrowserRouter(routes);
 
@@ -12,10 +14,10 @@ const root = createRoot(document.getElementById("root"));
 
 root.render(
     <React.StrictMode>
-        <BehaviorProvider>
+        <Provider store={store}>
             <UserProvider>
                 <RouterProvider router={router} />
             </UserProvider>
-        </BehaviorProvider>
+        </Provider>
     </React.StrictMode>
 );
