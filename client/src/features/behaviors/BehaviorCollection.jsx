@@ -1,11 +1,10 @@
-import { useContext, useEffect } from "react";
-import { BehaviorContext } from "../../context/BehaviorContext";
+import {useEffect } from "react";
 import { Link } from "react-router-dom";
-import {fetchBehaviors} from './behaviorSlice';
+import {fetchBehaviors, addBehavior} from './behaviorSlice';
 import {useSelector, useDispatch} from 'react-redux';
+import BehaviorForm from "./BehaviorForm";
 
 function BehaviorCollection() {
-    //const {behaviors} = useContext(BehaviorContext);
     const dispatch = useDispatch();
     const behaviors = useSelector(state => state.behaviors.list);
     const status = useSelector(state => state.behaviors.status);
@@ -35,6 +34,7 @@ function BehaviorCollection() {
                     </h4>
                 ))}
             </div>
+            <BehaviorForm />
         </>
     )
 }

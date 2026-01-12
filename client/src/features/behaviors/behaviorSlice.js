@@ -12,6 +12,19 @@ export const fetchBehaviors = createAsyncThunk(
     }
 );
 
+export const addBehavior = createAsyncThunk(
+    'behaviors/addBehavior',
+    async (newBehavior) => {
+        const response = await fetch('/behaviors', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newBehavior),
+        });
+        if (!response.ok) throw new Error('Failed to add behavior');
+        return await response.json()
+    }
+)
+
 const behaviorSlice = createSlice({
     name: 'behaviors',
     initialState: {
@@ -32,6 +45,10 @@ const behaviorSlice = createSlice({
             .addCase(fetchBehaviors.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
+            })
+
+            .addCase(addBehavior.fulfilled, (state, action) => {
+                state.list.push(action.payload);
             })
     }
 });

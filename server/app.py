@@ -86,6 +86,22 @@ class Behaviors(Resource):
         )
 
         return response
+    
+    @login_required
+    def post(self):
+        data = request.get_json()
+        try:
+            behavior = Behavior(
+                name=data['name'],
+                description=data['description'],
+                type=data['type']
+            )
+            db.session.add(behavior)
+            db.session.commit()
+            return behavior_schema.dump(behavior), 201
+        except Exception as e:
+            db.session.rollback()
+            return {'errors': [str(e)]}, 400
 
 
 api.add_resource(Login, '/login')
