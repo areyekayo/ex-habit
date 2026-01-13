@@ -1,6 +1,6 @@
 import App from "./App" ;
 import Home from "./pages/Home";
-import Login from "./pages/Login";
+import Login from "./features/users/Login";
 import BehaviorCollection from "./features/behaviors/BehaviorCollection";
 import BehaviorCard from "./features/behaviors/BehaviorCard";
 

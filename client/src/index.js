@@ -3,7 +3,6 @@ import "./index.css";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
-import { BehaviorProvider } from "./context/BehaviorContext";
 import routes from "./routes";
 import { store } from "./store";
 import {Provider} from 'react-redux';

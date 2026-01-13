@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
-import LoginForm from "../components/LoginForm";
-import { UserContext } from "../context/UserContext";
+import LoginForm from "./LoginForm";
+import { UserContext } from "../../context/UserContext";
 import {useNavigate, useLocation} from "react-router-dom";
 
 function Login(){

@@ -4,7 +4,7 @@ from flask_restful import Resource
 from config import app, db, api, ma
 from flask_login import login_user, login_required, current_user, logout_user
 from auth import login_manager
-from models import User, Behavior
+from models import User, Behavior, Trigger
 
 @app.route('/')
 def index():
@@ -31,6 +31,28 @@ class Logout(Resource):
         logout_user()
         return {'message': 'Logged out'}, 204
     
+class TriggerSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Trigger
+        load_instance = True
+    
+    id = ma.auto_field()
+    name = ma.auto_field()
+    description = ma.auto_field()
+    user_id = ma.auto_field()
+
+    url = ma.Hyperlinks(
+        {
+            "self": ma.URLFor(
+                "triggers",
+                values=dict(id="<id>")
+            )
+        }
+    )
+
+trigger_schema = TriggerSchema()
+triggers_schema = TriggerSchema(many=True)    
+
 class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         model = User
@@ -38,6 +60,7 @@ class UserSchema(ma.SQLAlchemySchema):
     
     id = ma.auto_field()
     username = ma.auto_field()
+    triggers = ma.Nested(TriggerSchema, many=True)
 
     url = ma.Hyperlinks(
         {
@@ -102,12 +125,20 @@ class Behaviors(Resource):
         except Exception as e:
             db.session.rollback()
             return {'errors': [str(e)]}, 400
+        
+class Triggers(Resource):
+    def get(self):
+        triggers = Trigger.query.all()
+        response = make_response(triggers_schema.dump(triggers), 200)
+
+        return response
 
 
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(Behaviors, '/behaviors')
 api.add_resource(CurrentUser, '/current_user')
+api.add_resource(Triggers, '/triggers')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

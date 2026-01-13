@@ -1,7 +1,7 @@
 import {useState, useContext} from "react";
 import {useFormik} from "formik" ;
 import * as yup from "yup";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 
 function LoginForm() {
     const [backendErrors, setBackendErrors] = useState({});
