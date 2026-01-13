@@ -12,6 +12,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String, unique=True, nullable=False)
     _password_hash = db.Column(db.String)
 
+    triggers = db.relationship('Trigger', back_populates='user', cascade='all, delete-orphan')
+
     def __repr__(self):
         return f"<User '{self.username}', id: {self.id}>"
     
@@ -48,6 +50,24 @@ class Behavior(db.Model):
             raise ValueError("Name must be between 5 and 100 characters")
         return name
     
+class Trigger(db.Model):
+    __tablename__ = "triggers"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    user = db.relationship('User', back_populates='triggers')
+
+    def __repr__(self):
+        return f"<Trigger '{self.name}', id: {self.id}, description: {self.description}, user_id: {self.user_id}"
+    
+    @validates('name')
+    def validate_name(self, key, name):
+        if not (5 <= len(name) <= 100):
+            raise ValueError("Name must be between 5 and 100 characters")
+        return name
 
 
 
