@@ -127,6 +127,7 @@ class Behaviors(Resource):
             return {'errors': [str(e)]}, 400
         
 class Triggers(Resource):
+    @login_required
     def get(self):
         triggers = Trigger.query.all()
         response = make_response(triggers_schema.dump(triggers), 200)

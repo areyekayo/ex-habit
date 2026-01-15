@@ -1,18 +1,24 @@
-import {useContext } from "react";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import {useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import NavBar from './components/NavBar';
-import { UserContext } from "./context/UserContext";
+import { fetchCurrentUser, logout } from "./features/users/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
-  const {user, isLoading} = useContext(UserContext)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {user, isAuthenticated, status} = useSelector((state) => state.user);
 
-  const location = useLocation();
+  useEffect(()=> {
+    dispatch(fetchCurrentUser());
+  }, [dispatch])
 
-  if (isLoading) {
-    return null;
-  }
+  useEffect(() => {
+    if (status !== "loading" && !isAuthenticated && !user) {
+      navigate('/login')
+    }
+  }, [isAuthenticated, status, navigate])
 
- if (!user && location.pathname !== "/login" ) return <Navigate to="/login" />
 
   return (
     <div>

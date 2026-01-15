@@ -1,11 +1,15 @@
-import {useState, useContext} from "react";
+import {useState, useEffect} from "react";
 import {useFormik} from "formik" ;
 import * as yup from "yup";
-import { UserContext } from "../../context/UserContext";
+import { loginUser } from "./userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
     const [backendErrors, setBackendErrors] = useState({});
-    const {onLogin} = useContext(UserContext);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const {error, isAuthenticated, status } = useSelector((state) => state.user)
 
     const formSchema = yup.object().shape({
             username: yup.string().required("Must enter username"),
@@ -20,31 +24,26 @@ function LoginForm() {
         validationSchema: formSchema,
         validateOnChange: true,
         onSubmit: async (values, {setErrors, setFieldValue}) => {
-            try {
-                const res = await fetch("/login", {
-                    method: "POST",
-                    headers: {"Content-type": "application/json"},
-                    body: JSON.stringify(values),
-                });
 
-                if (res.ok) {
-                    const user = await res.json();
-                    setBackendErrors({});
-                    console.log(`user: ${user}`)
-                    onLogin(user)
-                } else {
-                    const errorData = await res.json();
-                    if (errorData.errors?.login){
-                        setErrors({login: errorData.errors.login[0]});
-                        setBackendErrors({login: errorData.errors.login[0]})
+                const resultAction = await dispatch(loginUser(values)).unwrap();
+
+                if (loginUser.rejected.match(resultAction)) {
+                    if (resultAction.payload?.login) {
+                        setErrors({login: resultAction.payload.login[0]});
+                        setBackendErrors({login: resultAction.payload.login[0]});
                     }
                     setFieldValue("password", "");
+                } else {
+                    setBackendErrors({});
                 }
-            } catch (error){
-                console.error("Login request failed:", error);
-            }
+            }});
+
+    
+    useEffect(() => {
+        if (isAuthenticated){
+            navigate("/home");
         }
-    });
+    }, [isAuthenticated, navigate]);
 
     const getError = (field) => {
         if (backendErrors.login) return backendErrors.login;
