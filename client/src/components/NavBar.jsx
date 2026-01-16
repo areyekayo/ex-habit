@@ -10,7 +10,7 @@ function NavBar() {
 
     const handleLogout = () => {
         fetch('/logout',
-            {method: 'DELETE'})
+            {method: 'DELETE', credentials: 'include' })
             .then((r) => {
                 if (r.ok) {
                     dispatch(logout());

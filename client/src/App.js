@@ -16,7 +16,7 @@ function App() {
   }, [dispatch])
 
   useEffect(() => {
-    if ((status === "succeeded" || status === "failed") && !isAuthenticated && !user && location.pathname !== "/login") {
+    if ((status === "failed" || status === "idle") && !isAuthenticated && !user && location.pathname !== "/login") {
       navigate('/login')
     }
   }, [isAuthenticated, status, navigate, location.pathname])

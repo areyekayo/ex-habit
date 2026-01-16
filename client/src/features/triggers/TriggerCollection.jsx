@@ -1,16 +1,7 @@
-import {useEffect} from "react";
-import {fetchTriggers} from './triggerSlice';
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 function TriggerCollection() {
-    const dispatch = useDispatch();
-    const {triggers, status, error} = useSelector(state => state.triggers);
-
-    useEffect(() => {
-        if (status === 'idle') {
-            dispatch(fetchTriggers());
-        }
-    }, [status, dispatch]);
+    const {user, status, error} = useSelector(state => state.user);
 
     if (status === 'loading'){
         return <div>Loading triggers...</div>
@@ -24,11 +15,12 @@ function TriggerCollection() {
         <>
             <div>
                 <h3>Your Triggers</h3>
-                {/* {triggers.map(trigger => {
-                    <h4 key={trigger.id}>
-                        {trigger.name}
-                    </h4>
-                })} */}
+                {user && user.triggers.length > 0 ? (
+                    user.triggers.map((trigger) => (
+                        <h4 key={trigger.id}>{trigger.name}</h4>
+                    ))
+                ) : (<p>No triggers</p>)
+                }
             </div>
         </>
     )
