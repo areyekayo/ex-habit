@@ -4,9 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 function TriggerCollection() {
     const dispatch = useDispatch();
-    const triggers = useSelector(state => state.triggers.list);
-    const status = useSelector(state => state.triggers.status);
-    const error = useSelector(state => state.triggers.error);
+    const {triggers, status, error} = useSelector(state => state.triggers);
 
     useEffect(() => {
         if (status === 'idle') {

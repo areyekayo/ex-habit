@@ -1,16 +1,16 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import LoginForm from "./LoginForm";
-import { UserContext } from "../../context/UserContext";
 import {useNavigate, useLocation} from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Login(){
     const [showLogin, setShowLogin] = useState(true);
-    const {user} = useContext(UserContext);
+    const {user, isAuthenticated} = useSelector((state) => state.user)
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
-        if (user && location.pathname === "/login") {
+        if (user && location.pathname === "/login" && isAuthenticated) {
             navigate("/home", {replace: true})
         }
     }, [user, navigate, location.pathname])

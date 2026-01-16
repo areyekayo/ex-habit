@@ -1,6 +1,6 @@
 import {useEffect } from "react";
 import { Link } from "react-router-dom";
-import {fetchBehaviors, addBehavior} from './behaviorSlice';
+import {fetchBehaviors} from './behaviorSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import BehaviorForm from "./BehaviorForm";
 

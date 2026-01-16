@@ -1,8 +1,8 @@
-import { UserContext } from "../context/UserContext";
-import { useContext } from "react";
 import TriggerCollection from "../features/triggers/TriggerCollection";
+import { useSelector } from "react-redux";
+
 function Home() {
-    const {user} = useContext(UserContext)
+    const {user} = useSelector((state) => state.user)
 
     return (
         <>

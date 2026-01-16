@@ -3,10 +3,12 @@ import { Outlet, useNavigate } from "react-router-dom";
 import NavBar from './components/NavBar';
 import { fetchCurrentUser, logout } from "./features/users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const {user, isAuthenticated, status} = useSelector((state) => state.user);
 
   useEffect(()=> {
@@ -14,10 +16,10 @@ function App() {
   }, [dispatch])
 
   useEffect(() => {
-    if (status !== "loading" && !isAuthenticated && !user) {
+    if ((status === "succeeded" || status === "failed") && !isAuthenticated && !user && location.pathname !== "/login") {
       navigate('/login')
     }
-  }, [isAuthenticated, status, navigate])
+  }, [isAuthenticated, status, navigate, location.pathname])
 
 
   return (

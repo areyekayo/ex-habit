@@ -9,7 +9,7 @@ function LoginForm() {
     const [backendErrors, setBackendErrors] = useState({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {error, isAuthenticated, status } = useSelector((state) => state.user)
+    const {isAuthenticated} = useSelector((state) => state.user)
 
     const formSchema = yup.object().shape({
             username: yup.string().required("Must enter username"),
