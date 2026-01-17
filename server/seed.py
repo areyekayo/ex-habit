@@ -48,14 +48,14 @@ if __name__ == '__main__':
         behaviors = [drinking, smoking, nail_biting, screen_time, shopping, argument]
 
         print("Creating triggers...")
-        boredom = Trigger(name="Boredom", description=fake.sentence(), user=riko)
-        work_stress = Trigger(name="Work Stress", description=fake.sentence(), user=riko)
-        father = Trigger(name="My father", description=fake.sentence(), user=riko)
-        free_time = Trigger(name="Free Time", description=fake.sentence(), user=sam)
-        loud_noises = Trigger(name="Loud Noises", description=fake.sentence(), user=sam)
-        neighbor = Trigger(name="Neighbor plays loud music", description=fake.sentence(), user=alex)
-        going_out = Trigger(name="Going out with friends", description=fake.sentence(), user=steph)
-        boss = Trigger(name="My boss micromanaging me", description=fake.sentence(), user=steph)
+        boredom = Trigger(name="Boredom", description="Boredom can make it really easy for me to waste time when I want to be more productive", user=riko)
+        work_stress = Trigger(name="Work Stress", description="Work stress is very draining", user=riko)
+        father = Trigger(name="My father", description="My dad is a character and creates a lot of stress in my family", user=riko)
+        free_time = Trigger(name="Free Time", description="Having free time makes me feel like I have a lot of time", user=sam)
+        loud_noises = Trigger(name="Loud Noises", description="I feel very sensitive to loud noises", user=sam)
+        neighbor = Trigger(name="Neighbor plays loud music", description="My neighbor doesn't understand how thin the walls are", user=alex)
+        going_out = Trigger(name="Going out with friends", description="Going out presents so many opportunities to do things that I don't actually want to do", user=steph)
+        boss = Trigger(name="My boss micromanaging me", description="I feel like my boss doesn't trust me", user=steph)
 
         triggers = [boredom, work_stress, father, free_time, loud_noises, neighbor, going_out, boss]
 

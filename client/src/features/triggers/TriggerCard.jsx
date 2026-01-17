@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function TriggerCard(){
@@ -17,6 +17,19 @@ function TriggerCard(){
         <div>
             <h2>{trigger.name}</h2>
             <p>{trigger.description}</p>
+            <h3>Entries</h3>
+            {trigger && trigger.entries.length > 0 ? (
+                trigger.entries.map((entry) => (
+                    <h4 key={entry.id}>
+                        <Link to={`/entries/${entry.id}`} key={entry.id}>
+                            {entry.created_timestamp}
+                        </Link>
+                    </h4>
+                ))
+            ) : (
+                <p>No entries</p>
+            )
+        }
 
         </div>
     )
