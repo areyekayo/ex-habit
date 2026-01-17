@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import Login from "./features/users/Login";
 import BehaviorCollection from "./features/behaviors/BehaviorCollection";
 import BehaviorCard from "./features/behaviors/BehaviorCard";
+import TriggerCollection from "./features/triggers/TriggerCollection";
+import TriggerCard from "./features/triggers/TriggerCard";
 
 const routes = [
     {
@@ -24,6 +26,14 @@ const routes = [
             {
                 path: "/behaviors/:id",
                 element: <BehaviorCard />
+            },
+            {
+                path: "/triggers",
+                element: <TriggerCollection />
+            },
+            {
+                path: "/triggers/:id",
+                element: <TriggerCard />
             }
         ]
     }

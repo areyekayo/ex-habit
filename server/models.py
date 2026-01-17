@@ -81,7 +81,7 @@ class Trigger(db.Model):
     
     @validates('description')
     def validate_description(self, key, description):
-        if not (5 <= len(description) <= 100):
+        if not (5 <= len(description) <= 500):
             raise ValueError("Description must be between 5 and 500 characters")
 
 class Entry(db.Model):
