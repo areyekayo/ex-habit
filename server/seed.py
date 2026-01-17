@@ -8,7 +8,7 @@ from faker import Faker
 
 # Local imports
 from config import app, db
-from models import User, Behavior, Trigger
+from models import User, Behavior, Trigger, Entry
 
 if __name__ == '__main__':
     fake = Faker()
@@ -18,6 +18,8 @@ if __name__ == '__main__':
         User.query.delete()
         Behavior.query.delete()
         Trigger.query.delete()
+        Entry.query.delete()
+
 
         print("Creating users...")
 
@@ -41,8 +43,9 @@ if __name__ == '__main__':
         screen_time = Behavior(name="Screen Time", type="Productivity", description=fake.sentence())
         shopping = Behavior(name="Shopping", type="Finance", description=fake.sentence())
         over_eating = Behavior(name="Over Eating", type="Health", description=fake.sentence())
+        argument = Behavior(name="Argument", type="Social", description=fake.sentence())
         
-        behaviors = [drinking, smoking, nail_biting, screen_time, shopping]
+        behaviors = [drinking, smoking, nail_biting, screen_time, shopping, argument]
 
         print("Creating triggers...")
         boredom = Trigger(name="Boredom", description=fake.sentence(), user=riko)
@@ -56,9 +59,22 @@ if __name__ == '__main__':
 
         triggers = [boredom, work_stress, father, free_time, loud_noises, neighbor, going_out, boss]
 
+        print("Creating entries...")
+        entry1 = Entry(description=fake.sentence(), reward="Destressed", result="Wasted time", mood="Okay", trigger=boredom, behavior=screen_time)
+        entry2 = Entry(trigger=work_stress, behavior=drinking, description=fake.sentence(), reward="Feel relieved", result="Hangover", mood="Bad")
+        entry3= Entry(trigger=father, behavior=argument, description=fake.sentence(), reward="Nothing", result="I'm upset", mood="Struggling")
+        entry4= Entry(trigger=free_time, behavior=screen_time, mood="Good", description=fake.sentence(), reward="Feel relieved", result="I didn't get anything done")
+        entry5 = Entry(trigger=loud_noises, behavior=nail_biting, mood="Bad", description=fake.sentence(), reward="None", result="I'm annoyed")
+        entry6 = Entry(trigger=neighbor, behavior=argument, description=fake.sentence(), reward="None", result="Both of us are upset", mood="Bad")
+        entry7 = Entry(trigger=boss, behavior=smoking, mood="Okay", description=fake.sentence(), reward="I got away from my boss", result="My throat hurts and I smell like cigarettes")
+        entry8 = Entry(trigger=going_out, behavior=drinking, description=fake.sentence(), reward="I had fun with my friends", result="Hangover", mood="Bad")
+
+        entries = [entry1, entry2, entry3, entry4, entry5, entry6, entry7, entry8]
+
 
         db.session.add_all(users)
         db.session.add_all(behaviors)
         db.session.add_all(triggers)
+        db.session.add_all(entries)
         db.session.commit()
         print("Seeding done!")
