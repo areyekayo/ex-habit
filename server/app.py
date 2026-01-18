@@ -35,7 +35,51 @@ class EntrySchema(ma.SQLAlchemySchema):
 
 entry_schema = EntrySchema()
 entries_schema = EntrySchema(many=True)
-    
+
+class BehaviorSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Behavior
+        load_instance = True
+
+    id = ma.auto_field()
+    name = ma.auto_field()
+    description = ma.auto_field()
+    type = ma.auto_field()
+    triggers = ma.Method("get_user_triggers")
+
+    def get_user_triggers(self,obj):
+        triggers = [t for t in obj.triggers if t.user_id == current_user.id]
+        return TriggerSchemaWithEntries(many=True).dump(triggers)
+
+    url = ma.Hyperlinks(
+        {
+            "self": ma.URLFor(
+                "behaviors",
+                values=dict(id="<id>")
+            )
+        }
+    )
+
+behavior_schema = BehaviorSchema()
+behaviors_schema = BehaviorSchema(many=True)
+
+class BehaviorSchemaWithEntries(ma.SQLAlchemySchema):
+    class Meta:
+        model = Behavior
+        load_instance = True
+
+    id = ma.auto_field()
+    name = ma.auto_field()
+    description = ma.auto_field()
+    type = ma.auto_field()
+
+    entries = ma.Method("get_user_entries")
+
+    def get_user_entries(self, obj):
+        filtered_entries = [entry for entry in obj.entries if entry.trigger.user_id == current_user.id]
+        return entries_schema.dump(filtered_entries)
+
+
 class TriggerSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Trigger
@@ -45,7 +89,7 @@ class TriggerSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
     description = ma.auto_field()
     user_id = ma.auto_field()
-    entries = ma.Nested(EntrySchema, many=True)
+    behaviors = ma.Nested(BehaviorSchemaWithEntries(many=True))
 
     url = ma.Hyperlinks(
         {
@@ -59,6 +103,22 @@ class TriggerSchema(ma.SQLAlchemySchema):
 trigger_schema = TriggerSchema()
 triggers_schema = TriggerSchema(many=True)    
 
+class TriggerSchemaWithEntries(ma.SQLAlchemySchema):
+    class Meta:
+        model = Trigger
+        load_instance = True
+    id = ma.auto_field()
+    name = ma.auto_field()
+    description = ma.auto_field()
+    user_id = ma.auto_field()
+
+    entries = ma.Method("get_user_entries")
+
+    def get_user_entries(self, obj):
+        filtered_entries = [entry for entry in obj.entries if entry.trigger.user_id == current_user.id ]
+        return entries_schema.dump(filtered_entries)
+
+
 class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         model = User
@@ -67,30 +127,9 @@ class UserSchema(ma.SQLAlchemySchema):
     id = ma.auto_field()
     username = ma.auto_field()
     triggers = ma.Nested(TriggerSchema, many=True)
+    behaviors = ma.Nested(BehaviorSchema, many=True, attribute="behaviors")
 
 user_schema = UserSchema()
-
-class BehaviorSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = Behavior
-        load_instance = True
-
-    id = ma.auto_field()
-    name = ma.auto_field()
-    description = ma.auto_field()
-    type = ma.auto_field()
-
-    url = ma.Hyperlinks(
-        {
-            "self": ma.URLFor(
-                "behaviors",
-                values=dict(id="<id>")
-            )
-        }
-    )
-
-behavior_schema = BehaviorSchema()
-behaviors_schema = BehaviorSchema(many=True)
 
 class CurrentUser(Resource):
     @login_required

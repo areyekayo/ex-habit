@@ -1,7 +1,7 @@
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, contains_eager
 from sqlalchemy import Enum
 
 from config import db, bcrypt
@@ -16,6 +16,14 @@ class User(db.Model, UserMixin):
     triggers = db.relationship('Trigger', back_populates='user', cascade='all, delete-orphan')
     entries = association_proxy('triggers', 'entry', creator=lambda entry_obj: Trigger(entry=entry_obj))
 
+    @property
+    def behaviors(self):
+        behaviors = set()
+        for trigger in self.triggers:
+            for entry in trigger.entries:
+                if entry.user.id == self.id:
+                    behaviors.add(entry.behavior)
+        return list(behaviors)
 
     def __repr__(self):
         return f"<User '{self.username}', id: {self.id}>"
@@ -47,7 +55,7 @@ class Behavior(db.Model):
     type = db.Column(Enum(*BEHAVIOR_TYPES, name="behavior_type_enum"))
 
     entries = db.relationship('Entry', back_populates='behavior', cascade='all, delete-orphan')
-    triggers = association_proxy('triggers', 'entry', creator=lambda entry_obj: Trigger(entry=entry_obj))
+    triggers = association_proxy('entries', 'trigger', creator=lambda entry_obj: Trigger(entry=entry_obj))
 
     def __repr__(self):
         return f"<Behavior '{self.name}', id: {self.id}, type: {self.type}, {self.description}"
@@ -68,7 +76,9 @@ class Trigger(db.Model):
 
     user = db.relationship('User', back_populates='triggers')
     entries = db.relationship('Entry', back_populates='trigger', cascade='all, delete-orphan')
-    behaviors = association_proxy('behaviors', 'entry', creator=lambda entry_obj: Behavior(entry=entry_obj))
+    behaviors = association_proxy('entries', 'behavior', creator=lambda entry_obj: Behavior(entry=entry_obj))
+
+
 
     def __repr__(self):
         return f"<Trigger '{self.name}', id: {self.id}, description: {self.description}, user_id: {self.user_id}"
@@ -96,7 +106,7 @@ class Entry(db.Model):
 
     trigger = db.relationship('Trigger', back_populates='entries')
     behavior = db.relationship('Behavior', back_populates='entries')
-    user = association_proxy('triggers', 'user', creator=lambda user_obj: Trigger(user=user_obj))
+    user = association_proxy('trigger', 'user', creator=lambda user_obj: Trigger(user=user_obj))
 
     def __repr__(self):
         return f"<Entry id: {self.id}, {self.created_timestamp}, trigger: {self.trigger.name}, behavior: {self.behavior.name}, user: {self.user.username}"

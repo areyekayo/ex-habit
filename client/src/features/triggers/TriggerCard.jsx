@@ -17,12 +17,12 @@ function TriggerCard(){
         <div>
             <h2>{trigger.name}</h2>
             <p>{trigger.description}</p>
-            <h3>Entries</h3>
-            {trigger && trigger.entries.length > 0 ? (
-                trigger.entries.map((entry) => (
-                    <h4 key={entry.id}>
-                        <Link to={`/entries/${entry.id}`} key={entry.id}>
-                            {entry.created_timestamp}
+            <h3>Your Habits</h3>
+            {trigger && trigger.behaviors.length > 0 ? (
+                trigger.behaviors.map((behavior) => (
+                    <h4 key={behavior.id}>
+                        <Link to={`/behaviors/${behavior.id}`} key={behavior.id}>
+                            {behavior.name}
                         </Link>
                     </h4>
                 ))

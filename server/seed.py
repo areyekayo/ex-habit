@@ -60,14 +60,21 @@ if __name__ == '__main__':
         triggers = [boredom, work_stress, father, free_time, loud_noises, neighbor, going_out, boss]
 
         print("Creating entries...")
-        entry1 = Entry(description=fake.sentence(), reward="Destressed", result="Wasted time", mood="Okay", trigger=boredom, behavior=screen_time)
-        entry2 = Entry(trigger=work_stress, behavior=drinking, description=fake.sentence(), reward="Feel relieved", result="Hangover", mood="Bad")
-        entry3= Entry(trigger=father, behavior=argument, description=fake.sentence(), reward="Nothing", result="I'm upset", mood="Struggling")
-        entry4= Entry(trigger=free_time, behavior=screen_time, mood="Good", description=fake.sentence(), reward="Feel relieved", result="I didn't get anything done")
-        entry5 = Entry(trigger=loud_noises, behavior=nail_biting, mood="Bad", description=fake.sentence(), reward="None", result="I'm annoyed")
-        entry6 = Entry(trigger=neighbor, behavior=argument, description=fake.sentence(), reward="None", result="Both of us are upset", mood="Bad")
-        entry7 = Entry(trigger=boss, behavior=smoking, mood="Okay", description=fake.sentence(), reward="I got away from my boss", result="My throat hurts and I smell like cigarettes")
-        entry8 = Entry(trigger=going_out, behavior=drinking, description=fake.sentence(), reward="I had fun with my friends", result="Hangover", mood="Bad")
+        entry1 = Entry(description="user: riko, trigger: boredom, behavior: screen time", reward="Destressed", result="Wasted time", mood="Okay", trigger=boredom, behavior=screen_time)
+
+        entry2 = Entry(trigger=work_stress, behavior=drinking, description="user: riko, trigger: work stress, behavior: drinking", reward="Feel relieved", result="Hangover", mood="Bad")
+
+        entry3= Entry(trigger=father, behavior=argument, description="user: riko, trigger: father, behavior: argument", reward="Nothing", result="I'm upset", mood="Struggling")
+
+        entry4= Entry(trigger=free_time, behavior=screen_time, mood="Good", description="user: sam, trigger: free time, behavior: screen time", reward="Feel relieved", result="I didn't get anything done")
+
+        entry5 = Entry(trigger=loud_noises, behavior=nail_biting, mood="Bad", description="user: sam, trigger: loud noises, behavior: nail biting", reward="None", result="I'm annoyed")
+
+        entry6 = Entry(trigger=neighbor, behavior=argument, description="user: alex, trigger: neighbor, behavior: argument", reward="None", result="Both of us are upset", mood="Bad")
+
+        entry7 = Entry(trigger=boss, behavior=smoking, mood="Okay", description="user: steph, tigger: boss, behavior: smoking", reward="I got away from my boss", result="My throat hurts and I smell like cigarettes")
+
+        entry8 = Entry(trigger=going_out, behavior=drinking, description="user: steph, trigger: going out, behavior: drinking", reward="I had fun with my friends", result="Hangover", mood="Bad")
 
         entries = [entry1, entry2, entry3, entry4, entry5, entry6, entry7, entry8]
 
