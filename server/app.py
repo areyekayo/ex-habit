@@ -193,10 +193,30 @@ class Triggers(Resource):
 
 class Entries(Resource):
     @login_required
-    def get(self):
-        entries = Entry.query.all()
-        response = make_response(entries_schema.dump(entries), 200)
-        return response
+    def post(self):
+        data = request.get_json()
+        trigger_id = data.get('trigger')
+        trigger = Trigger.query.get(trigger_id)
+        if not trigger: return {'error': 'Trigger not found'}, 404
+        behavior_id = data.get('behavior')
+        behavior = Behavior.query.get(behavior_id)
+        if not behavior: return {'error': 'Behavior not found'}, 404
+
+        try:
+            entry = Entry(
+                description=data['description'],
+                result=data['result'],
+                reward=data['reward'],
+                mood=data['mood'],
+                trigger=trigger,
+                behavior=behavior
+            )
+            db.session.add(entry)
+            db.session.commit()
+            return entry_schema.dump(entry), 201
+        except Exception as e:
+            db.session.rollback()
+            return {'errors': [str(e)]}, 400
 
 
 
