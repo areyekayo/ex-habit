@@ -10,6 +10,8 @@ function BehaviorCollection() {
     const status = useSelector(state => state.behaviors.status);
     const error = useSelector(state => state.behaviors.error);
 
+    console.log(`behavior status: ${status}`)
+
     useEffect(() => {
         if (status === 'idle') {
             dispatch(fetchBehaviors());

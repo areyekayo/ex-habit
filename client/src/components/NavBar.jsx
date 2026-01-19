@@ -22,7 +22,6 @@ function NavBar() {
     return (
         <nav>
             <NavLink to="/home">Home</NavLink>
-            <NavLink to="/behaviors">Behaviors</NavLink>
             {isAuthenticated ? (
                 <button onClick={handleLogout}>Logout</button>
             )

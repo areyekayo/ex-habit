@@ -46,7 +46,6 @@ const behaviorSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message;
             })
-
             .addCase(addBehavior.fulfilled, (state, action) => {
                 state.list.push(action.payload);
             })

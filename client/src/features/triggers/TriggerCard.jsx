@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import BehaviorCard from "../behaviors/BehaviorCard";
 
 function TriggerCard(){
     const {id} = useParams();
@@ -17,14 +18,10 @@ function TriggerCard(){
         <div>
             <h2>{trigger.name}</h2>
             <p>{trigger.description}</p>
-            <h3>Your Habits</h3>
+            <h3>Related Habits</h3>
             {trigger && trigger.behaviors.length > 0 ? (
                 trigger.behaviors.map((behavior) => (
-                    <h4 key={behavior.id}>
-                        <Link to={`/behaviors/${behavior.id}`} key={behavior.id}>
-                            {behavior.name}
-                        </Link>
-                    </h4>
+                    <BehaviorCard key={behavior.id} behavior={behavior}/>
                 ))
             ) : (
                 <p>No entries</p>

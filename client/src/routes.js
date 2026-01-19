@@ -1,5 +1,5 @@
 import App from "./App" ;
-import Home from "./pages/Home";
+import Home from "./features/users/Home";
 import Login from "./features/users/Login";
 import BehaviorCollection from "./features/behaviors/BehaviorCollection";
 import BehaviorCard from "./features/behaviors/BehaviorCard";
@@ -20,16 +20,8 @@ const routes = [
                 element: <Home />
             },
             {
-                path: "/behaviors",
-                element: <BehaviorCollection />
-            },
-            {
-                path: "/behaviors/:id",
-                element: <BehaviorCard />
-            },
-            {
                 path: "/triggers",
-                element: <TriggerCollection />
+                element: <TriggerCollection />,
             },
             {
                 path: "/triggers/:id",

@@ -1,4 +1,4 @@
-import TriggerCollection from "../features/triggers/TriggerCollection";
+import TriggerCollection from "../triggers/TriggerCollection";
 import { useSelector } from "react-redux";
 
 function Home() {
