@@ -11,7 +11,13 @@ export const addEntry = createAsyncThunk(
         });
         if (!response.ok) throw new Error('Failed to add entry');
         const data = await response.json()
-        thunkAPI.dispatch(addEntryToTriggerBehavior({triggerId: data.trigger_id, behaviorId: data.behavior_id, entry: data}));
+        const state = thunkAPI.getState();
+        const behavior = state.behaviors.list.find(b => b.id === data.behavior_id)
+        thunkAPI.dispatch(addEntryToTriggerBehavior({
+            triggerId: data.trigger_id, 
+            behaviorId: data.behavior_id,
+            behavior, 
+            entry: data}));
         return data
     }
 );
@@ -29,8 +35,6 @@ const entrySlice = createSlice({
             .addCase(addEntry.fulfilled, (state, action) => {
                 state.status = "succeeded";
                 state.list = action.payload;
-
-  
             })
     }
 })

@@ -1,7 +1,7 @@
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask_login import UserMixin
-from sqlalchemy.orm import validates, contains_eager
+from sqlalchemy.orm import validates
 from sqlalchemy import Enum
 
 from config import db, bcrypt
@@ -78,8 +78,6 @@ class Trigger(db.Model):
     entries = db.relationship('Entry', back_populates='trigger', cascade='all, delete-orphan')
     behaviors = association_proxy('entries', 'behavior', creator=lambda entry_obj: Behavior(entry=entry_obj))
 
-
-
     def __repr__(self):
         return f"<Trigger '{self.name}', id: {self.id}, description: {self.description}, user_id: {self.user_id}"
     
@@ -122,10 +120,3 @@ class Entry(db.Model):
         if mood not in self.MOODS:
             raise ValueError("Mood is invalid value")
         return mood
-
-
-    
-
-
-
-

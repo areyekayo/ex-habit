@@ -55,15 +55,22 @@ const userSlice = createSlice({
             state.isAuthenticated = false;
         },
         addEntryToTriggerBehavior(state, action) {
-            const {triggerId, behaviorId, entry } = action.payload;
-            console.log(`trigger: ${triggerId}, behavior: ${behaviorId}`)
+            const {triggerId, behaviorId, behavior, entry } = action.payload;
             const trigger = state.user.triggers.find(t => t.id === triggerId);
-            const behavior = trigger.behaviors?.find(b => b.id === behaviorId);
-            if(!behavior) {
-                trigger.behaviors.push(behavior)
-                behavior.entries = []
+            if (!trigger) return;
+            let existingBehavior = trigger.behaviors?.find(b => b.id === behaviorId);
+
+            if(!existingBehavior) {
+                if (!trigger.behaviors) trigger.behaviors = [];
+                const newBehavior = {
+                    ...behavior,
+                    entries: behavior.entries ? [...behavior.entries] : [],
+                };
+                trigger.behaviors.push(newBehavior);
+                existingBehavior = newBehavior
             }
-            behavior.entries.push(entry)
+            if (!existingBehavior.entries) existingBehavior.entries = []
+            existingBehavior.entries.push(entry)
         }
     },
     extraReducers: (builder) => {

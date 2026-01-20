@@ -48,6 +48,7 @@ class BehaviorSchema(ma.SQLAlchemySchema):
     triggers = ma.Method("get_user_triggers")
 
     def get_user_triggers(self,obj):
+        # Function to retrieve triggers with entries that match the parent behavior
         if obj is None or obj.triggers is None:
             return []
         triggers = []
@@ -89,6 +90,7 @@ class BehaviorSchemaWithEntries(ma.SQLAlchemySchema):
     entries = ma.Method("get_user_entries")
 
     def get_user_entries(self, obj):
+        # function to filter entries that match the user and behavior
         if obj is None:
             return []
         filtered_entries = [entry for entry in obj.entries
@@ -109,6 +111,7 @@ class TriggerSchema(ma.SQLAlchemySchema):
     behaviors = ma.Method("get_user_behaviors")
 
     def get_user_behaviors(self, obj):
+        # Function to get behaviors that match the user and parent trigger
         if obj is None or obj.behaviors is None:
             return []
         behaviors = []
