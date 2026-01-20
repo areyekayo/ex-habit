@@ -58,7 +58,7 @@ class Behavior(db.Model):
     triggers = association_proxy('entries', 'trigger', creator=lambda entry_obj: Trigger(entry=entry_obj))
 
     def __repr__(self):
-        return f"<Behavior '{self.name}', id: {self.id}, type: {self.type}, {self.description}"
+        return f"<Behavior '{self.name}', id: {self.id}, type: {self.type}, {self.description}, entries: {self.entries}"
     
     @validates('name')
     def validate_name(self, key, name):

@@ -34,5 +34,5 @@ const triggerSlice = createSlice({
             })
     }
 });
-
+export const {addEntryToTrigger} = triggerSlice.actions;
 export default triggerSlice.reducer

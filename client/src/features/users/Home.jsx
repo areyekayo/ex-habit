@@ -5,6 +5,8 @@ import EntryForm from "../journal/EntryForm";
 function Home() {
     const {user} = useSelector((state) => state.user)
 
+    if (!user) return <div>Loading user...</div>
+
     return (
         <>
             <h1>Home Page</h1>

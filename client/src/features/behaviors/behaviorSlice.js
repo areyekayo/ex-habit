@@ -32,7 +32,16 @@ const behaviorSlice = createSlice({
         status: 'idle',
         error: null,
     },
-    reducers: {},
+    reducers: {
+        addEntryToBehavior(state, action){
+            const {behaviorId, entry} = action.payload;
+            const behavior = state.list.find(b => b.id === behaviorId)
+            if (behavior){
+                if (!behavior.entries) behavior.entries = [];
+                behavior.entires.push(entry)
+            }
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchBehaviors.pending, (state) => {
@@ -51,5 +60,6 @@ const behaviorSlice = createSlice({
             })
     }
 });
+export const {addEntryToBehavior} = behaviorSlice.actions
 
 export default behaviorSlice.reducer

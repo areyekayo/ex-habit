@@ -48,7 +48,20 @@ class BehaviorSchema(ma.SQLAlchemySchema):
     triggers = ma.Method("get_user_triggers")
 
     def get_user_triggers(self,obj):
-        triggers = [t for t in obj.triggers if t.user_id == current_user.id]
+        if obj is None or obj.triggers is None:
+            return []
+        triggers = []
+        for t in obj.triggers:
+            if t is None:
+                continue
+            if t.user_id == current_user.id:
+                filtered_entries = [entry for entry in t.entries
+                                    if entry.behavior_id == obj.id
+                                    and entry.trigger_id == t.id
+                                    and entry.trigger.user_id == current_user.id]
+                t.entries = filtered_entries
+                triggers.append(t)
+
         return TriggerSchemaWithEntries(many=True).dump(triggers)
 
     url = ma.Hyperlinks(
@@ -76,7 +89,11 @@ class BehaviorSchemaWithEntries(ma.SQLAlchemySchema):
     entries = ma.Method("get_user_entries")
 
     def get_user_entries(self, obj):
-        filtered_entries = [entry for entry in obj.entries if entry.trigger.user_id == current_user.id]
+        if obj is None:
+            return []
+        filtered_entries = [entry for entry in obj.entries
+                            if entry.trigger.user_id == current_user.id
+                            and entry.behavior_id == obj.id]
         return entries_schema.dump(filtered_entries)
 
 
@@ -89,7 +106,22 @@ class TriggerSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
     description = ma.auto_field()
     user_id = ma.auto_field()
-    behaviors = ma.Nested(BehaviorSchemaWithEntries(many=True))
+    behaviors = ma.Method("get_user_behaviors")
+
+    def get_user_behaviors(self, obj):
+        if obj is None or obj.behaviors is None:
+            return []
+        behaviors = []
+        for behavior in obj.behaviors:
+            if behavior is None:
+                continue
+            filtered_entries = [entry for entry in behavior.entries
+                                if entry.trigger.user_id == current_user.id
+                                and entry.trigger_id == obj.id
+                                and entry.behavior_id == behavior.id]
+            behavior.entries = filtered_entries
+            behaviors.append(behavior)
+        return BehaviorSchemaWithEntries(many=True).dump(behaviors)
 
     url = ma.Hyperlinks(
         {
@@ -115,7 +147,11 @@ class TriggerSchemaWithEntries(ma.SQLAlchemySchema):
     entries = ma.Method("get_user_entries")
 
     def get_user_entries(self, obj):
-        filtered_entries = [entry for entry in obj.entries if entry.trigger.user_id == current_user.id ]
+        if obj is None:
+            return []
+        filtered_entries = [entry for entry in obj.entries
+                            if entry.trigger.user_id == current_user.id
+                            and entry.trigger_id == obj.id]
         return entries_schema.dump(filtered_entries)
 
 
@@ -146,7 +182,7 @@ class Login(Resource):
 
         if not user or not user.authenticate(password):
             return {'errors': {'login': ['Invalid username or password']}}, 401
-        
+
         if user.authenticate(password):
             login_user(user, remember=True)
             return make_response(user_schema.dump(user), 200)

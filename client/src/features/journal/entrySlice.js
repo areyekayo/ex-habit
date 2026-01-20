@@ -1,16 +1,18 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-
+import { addEntryToTriggerBehavior } from "../users/userSlice";
 
 export const addEntry = createAsyncThunk(
     'entries/addEntry',
-    async (newEntry) => {
+    async (newEntry, thunkAPI) => {
         const response = await fetch('/entries', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(newEntry)
         });
         if (!response.ok) throw new Error('Failed to add entry');
-        return await response.json()
+        const data = await response.json()
+        thunkAPI.dispatch(addEntryToTriggerBehavior({triggerId: data.trigger_id, behaviorId: data.behavior_id, entry: data}));
+        return data
     }
 );
 
@@ -24,8 +26,11 @@ const entrySlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(addEntry.fulfilled, (state,action) => {
-                state.list.push(action.payload);
+            .addCase(addEntry.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.list = action.payload;
+
+  
             })
     }
 })

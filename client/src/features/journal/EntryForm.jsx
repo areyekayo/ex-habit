@@ -10,7 +10,7 @@ function EntryForm(){
     const dispatch = useDispatch();
     const {user} = useSelector((state) => state.user)
     const [successMessage, setSuccessMessage] = useState("");
-    const triggers = user.triggers;
+    const triggers = user?.triggers || [];
     const behaviors = useSelector((state) => state.behaviors.list)
     const behaviorsStatus = useSelector((state) => state.behaviors.status )
 
@@ -46,7 +46,7 @@ function EntryForm(){
                 setSuccessMessage("Entry added successfully");
                 resetForm();
             }
-            catch (error) {console.error("Form submission failed")}
+            catch (error) {console.error("Form submission failed", error)}
         }
     });
 
