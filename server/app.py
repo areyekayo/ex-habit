@@ -229,6 +229,23 @@ class Triggers(Resource):
         response = make_response(triggers_schema.dump(triggers), 200)
 
         return response
+    
+    @login_required
+    def post(self):
+        data = request.get_json()
+        try:
+            trigger = Trigger(
+                name=data['name'],
+                description=data['description'],
+                user=current_user
+            )
+            db.session.add(trigger)
+            db.session.commit()
+            return trigger_schema.dump(trigger), 201
+        except Exception as e:
+            db.session.rollback()
+            return {'errors': [str(e)]}, 400
+    
 
 class Entries(Resource):
     @login_required

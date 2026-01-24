@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { addTriggerToUser } from "../users/userSlice";
 
 export const fetchTriggers = createAsyncThunk(
     'triggers/fetchTriggers',
@@ -8,6 +9,23 @@ export const fetchTriggers = createAsyncThunk(
             throw new Error('Failed to fetch triggers');
         }
         return await response.json()
+    }
+)
+
+export const addTrigger = createAsyncThunk(
+    'triggers/addTrigger',
+    async (newTrigger, thunkAPI) => {
+        const response = await fetch('/triggers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newTrigger)
+        });
+        if (!response.ok) throw new Error('Failed to add trigger');
+        const data = await response.json()
+        thunkAPI.dispatch(addTriggerToUser({
+            data
+        }))
+        
     }
 )
 

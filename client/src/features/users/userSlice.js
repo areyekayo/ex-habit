@@ -71,6 +71,10 @@ const userSlice = createSlice({
             }
             if (!existingBehavior.entries) existingBehavior.entries = []
             existingBehavior.entries.push(entry)
+        },
+        addTriggerToUser(state, action) {
+            const {trigger} = action.payload;
+            state.user.triggers = [...state.user.triggers, trigger]
         }
     },
     extraReducers: (builder) => {
@@ -105,5 +109,5 @@ const userSlice = createSlice({
             })
     }
 })
-export const {logout, addEntryToTriggerBehavior} = userSlice.actions;
+export const {logout, addEntryToTriggerBehavior, addTriggerToUser} = userSlice.actions;
 export default userSlice.reducer;
