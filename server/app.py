@@ -24,19 +24,11 @@ class EntrySchema(ma.SQLAlchemySchema):
     reward = ma.auto_field()
     result = ma.auto_field()
 
-    url = ma.Hyperlinks(
-        {
-            "self": ma.URLFor(
-                'entries',
-                values=dict(id="<id>")
-            )
-        }
-    )
-
 entry_schema = EntrySchema()
 entries_schema = EntrySchema(many=True)
 
 class BehaviorTriggerSchemaWithEntries(ma.SQLAlchemySchema):
+    # Behavior > Trigger > Entries Schema
     class Meta:
         model = Trigger
         load_instance = True
@@ -48,14 +40,14 @@ class BehaviorTriggerSchemaWithEntries(ma.SQLAlchemySchema):
     entries = ma.Method("get_entries_for_behavior")
 
     def get_entries_for_behavior(self, trigger_obj):
+        # Get entries that match this trigger and its parent behavior from context. 
         behavior_obj = self.context.get("behavior")
         if not behavior_obj or not trigger_obj:
             return []
     
         filtered_entries = [e for e in trigger_obj.entries
                             if e.behavior_id == behavior_obj.id
-                            and e.trigger_id == trigger_obj.id
-                            and trigger_obj.user_id == current_user.id]
+                            and e.trigger_id == trigger_obj.id]
         return entries_schema.dump(filtered_entries)
 
 class BehaviorSchema(ma.SQLAlchemySchema):
@@ -67,9 +59,9 @@ class BehaviorSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
     description = ma.auto_field()
     type = ma.auto_field()
-    triggers = ma.Method("get_user_triggers")
+    triggers = ma.Method("get_nested_trigger_entries")
 
-    def get_user_triggers(self, behavior_obj):
+    def get_nested_trigger_entries(self, behavior_obj):
         # Function to retrieve triggers with entries that match the parent behavior
         if behavior_obj is None or behavior_obj.triggers is None:
             return []
@@ -79,23 +71,16 @@ class BehaviorSchema(ma.SQLAlchemySchema):
                 continue
             if trigger.user_id != current_user.id:
                 continue
+            # Instantiate nested triggers with entries schema, passing the behavior as context
             schema = BehaviorTriggerSchemaWithEntries(context={"behavior": behavior_obj})
             triggers.append(schema.dump(trigger))
         return triggers
-
-    url = ma.Hyperlinks(
-        {
-            "self": ma.URLFor(
-                "behaviors",
-                values=dict(id="<id>")
-            )
-        }
-    )
-
+    
 behavior_schema = BehaviorSchema()
 behaviors_schema = BehaviorSchema(many=True)
 
 class TriggerBehaviorSchemaWithEntries(ma.SQLAlchemySchema):
+    # Trigger > Behavior > Entries schema
     class Meta:
         model = Behavior
         load_instance = True
@@ -108,7 +93,7 @@ class TriggerBehaviorSchemaWithEntries(ma.SQLAlchemySchema):
     entries = ma.Method("get_entries_for_trigger")
 
     def get_entries_for_trigger(self, behavior_obj):
-        # function to filter entries that match the user and behavior
+        # Gets entries that patch this behavior and its parent trigger from context. Current user should already match the trigger.
         trigger_obj = self.context.get("trigger")
         if not trigger_obj:
             return []
@@ -129,9 +114,9 @@ class TriggerSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
     description = ma.auto_field()
     user_id = ma.auto_field()
-    behaviors = ma.Method("get_user_behaviors")
+    behaviors = ma.Method("get_nested_behavior_entries")
 
-    def get_user_behaviors(self, trigger_obj):
+    def get_nested_behavior_entries(self, trigger_obj):
         # Function to get behaviors that match the user and parent trigger
         if trigger_obj is None or trigger_obj.behaviors is None:
             return []
@@ -139,22 +124,13 @@ class TriggerSchema(ma.SQLAlchemySchema):
         for behavior in trigger_obj.behaviors:
             if behavior is None:
                 continue
+            # Instantiate nested behaviors with entries schema, passing trigger as context
             schema = TriggerBehaviorSchemaWithEntries(context={"trigger": trigger_obj})
             behaviors.append(schema.dump(behavior))
         return behaviors
 
-    url = ma.Hyperlinks(
-        {
-            "self": ma.URLFor(
-                "triggers",
-                values=dict(id="<id>")
-            )
-        }
-    )
-
 trigger_schema = TriggerSchema()
 triggers_schema = TriggerSchema(many=True)    
-
 
 class UserSchema(ma.SQLAlchemySchema):
     class Meta:
@@ -163,7 +139,7 @@ class UserSchema(ma.SQLAlchemySchema):
     
     id = ma.auto_field()
     username = ma.auto_field()
-    triggers = ma.Nested(TriggerSchema, many=True)
+    triggers = ma.Nested(triggers_schema)
     behaviors = ma.Nested(BehaviorSchema, many=True, attribute="behaviors")
 
 user_schema = UserSchema()
@@ -198,11 +174,7 @@ class Behaviors(Resource):
     def get(self):
         behaviors = Behavior.query.all()
 
-        response = make_response(
-            behaviors_schema.dump(behaviors), 200
-        )
-
-        return response
+        return make_response(behaviors_schema.dump(behaviors), 200)
     
     @login_required
     def post(self):
@@ -221,13 +193,6 @@ class Behaviors(Resource):
             return {'errors': [str(e)]}, 400
         
 class Triggers(Resource):
-    @login_required
-    def get(self):
-        triggers = Trigger.query.all()
-        response = make_response(triggers_schema.dump(triggers), 200)
-
-        return response
-    
     @login_required
     def post(self):
         data = request.get_json()

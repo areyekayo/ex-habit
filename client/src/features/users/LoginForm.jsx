@@ -3,12 +3,13 @@ import {useFormik} from "formik" ;
 import * as yup from "yup";
 import { loginUser } from "./userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function LoginForm() {
     const [backendErrors, setBackendErrors] = useState({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const {isAuthenticated} = useSelector((state) => state.user)
 
     const formSchema = yup.object().shape({
@@ -41,9 +42,10 @@ function LoginForm() {
     
     useEffect(() => {
         if (isAuthenticated){
-            navigate("/home");
+            const from = location.state?.from?.pathname || "/home";
+            navigate(from, {replace: true});
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate, location]);
 
     const getError = (field) => {
         if (backendErrors.login) return backendErrors.login;

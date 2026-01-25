@@ -16,10 +16,17 @@ function App() {
   }, [dispatch])
 
   useEffect(() => {
-    if ((status === "failed" || status === "idle") && !isAuthenticated && !user && location.pathname !== "/login") {
-      navigate('/login')
+    const protectedPaths = ['/home', '/behaviors', '/triggers'];
+    const isProtectedRoute = protectedPaths.some(path => location.pathname.startsWith(path));
+
+    if ((status === "failed" || status === "idle") && !isAuthenticated && !user && location.pathname !== "/login" && isProtectedRoute) {
+      navigate('/login', {replace: true, state: {from: location}})
     }
-  }, [isAuthenticated, status, navigate, location.pathname])
+    if (isAuthenticated && location.pathname === "/login") {
+      const from = location.state?.from?.pathname || "/home";
+      navigate(from, {replace: true});
+    }
+  }, [isAuthenticated, status, navigate, location, user])
 
 
   return (
