@@ -68,9 +68,11 @@ const userSlice = createSlice({
                 };
                 trigger.behaviors.push(newBehavior);
                 existingBehavior = newBehavior
+                state.user.behaviors.push(existingBehavior)
             }
             if (!existingBehavior.entries) existingBehavior.entries = []
             existingBehavior.entries.push(entry)
+
         },
         addTriggerToUser(state, action) {
             const trigger = action.payload;
