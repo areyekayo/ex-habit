@@ -22,10 +22,8 @@ export const addTrigger = createAsyncThunk(
         });
         if (!response.ok) throw new Error('Failed to add trigger');
         const data = await response.json()
-        thunkAPI.dispatch(addTriggerToUser({
-            data
-        }))
-        
+        thunkAPI.dispatch(addTriggerToUser(data))
+        return data
     }
 )
 
@@ -49,6 +47,10 @@ const triggerSlice = createSlice({
             .addCase(fetchTriggers.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
+            })
+            .addCase(addTrigger.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.list = action.payload ;
             })
     }
 });

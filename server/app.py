@@ -36,6 +36,28 @@ class EntrySchema(ma.SQLAlchemySchema):
 entry_schema = EntrySchema()
 entries_schema = EntrySchema(many=True)
 
+class BehaviorTriggerSchemaWithEntries(ma.SQLAlchemySchema):
+    class Meta:
+        model = Trigger
+        load_instance = True
+    id = ma.auto_field()
+    name = ma.auto_field()
+    description = ma.auto_field()
+    user_id = ma.auto_field()
+
+    entries = ma.Method("get_entries_for_behavior")
+
+    def get_entries_for_behavior(self, trigger_obj):
+        behavior_obj = self.context.get("behavior")
+        if not behavior_obj or not trigger_obj:
+            return []
+    
+        filtered_entries = [e for e in trigger_obj.entries
+                            if e.behavior_id == behavior_obj.id
+                            and e.trigger_id == trigger_obj.id
+                            and trigger_obj.user_id == current_user.id]
+        return entries_schema.dump(filtered_entries)
+
 class BehaviorSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Behavior
@@ -47,23 +69,19 @@ class BehaviorSchema(ma.SQLAlchemySchema):
     type = ma.auto_field()
     triggers = ma.Method("get_user_triggers")
 
-    def get_user_triggers(self,obj):
+    def get_user_triggers(self, behavior_obj):
         # Function to retrieve triggers with entries that match the parent behavior
-        if obj is None or obj.triggers is None:
+        if behavior_obj is None or behavior_obj.triggers is None:
             return []
         triggers = []
-        for t in obj.triggers:
-            if t is None:
+        for trigger in behavior_obj.triggers:
+            if trigger is None:
                 continue
-            if t.user_id == current_user.id:
-                filtered_entries = [entry for entry in t.entries
-                                    if entry.behavior_id == obj.id
-                                    and entry.trigger_id == t.id
-                                    and entry.trigger.user_id == current_user.id]
-                t.entries = filtered_entries
-                triggers.append(t)
-
-        return TriggerSchemaWithEntries(many=True).dump(triggers)
+            if trigger.user_id != current_user.id:
+                continue
+            schema = BehaviorTriggerSchemaWithEntries(context={"behavior": behavior_obj})
+            triggers.append(schema.dump(trigger))
+        return triggers
 
     url = ma.Hyperlinks(
         {
@@ -77,7 +95,7 @@ class BehaviorSchema(ma.SQLAlchemySchema):
 behavior_schema = BehaviorSchema()
 behaviors_schema = BehaviorSchema(many=True)
 
-class BehaviorSchemaWithEntries(ma.SQLAlchemySchema):
+class TriggerBehaviorSchemaWithEntries(ma.SQLAlchemySchema):
     class Meta:
         model = Behavior
         load_instance = True
@@ -87,15 +105,18 @@ class BehaviorSchemaWithEntries(ma.SQLAlchemySchema):
     description = ma.auto_field()
     type = ma.auto_field()
 
-    entries = ma.Method("get_user_entries")
+    entries = ma.Method("get_entries_for_trigger")
 
-    def get_user_entries(self, obj):
+    def get_entries_for_trigger(self, behavior_obj):
         # function to filter entries that match the user and behavior
-        if obj is None:
+        trigger_obj = self.context.get("trigger")
+        if not trigger_obj:
             return []
-        filtered_entries = [entry for entry in obj.entries
-                            if entry.trigger.user_id == current_user.id
-                            and entry.behavior_id == obj.id]
+        if behavior_obj is None:
+            return []
+        filtered_entries = [e for e in behavior_obj.entries
+                            if e.trigger_id == trigger_obj.id
+                            and e.behavior.id == behavior_obj.id]
         return entries_schema.dump(filtered_entries)
 
 
@@ -110,21 +131,17 @@ class TriggerSchema(ma.SQLAlchemySchema):
     user_id = ma.auto_field()
     behaviors = ma.Method("get_user_behaviors")
 
-    def get_user_behaviors(self, obj):
+    def get_user_behaviors(self, trigger_obj):
         # Function to get behaviors that match the user and parent trigger
-        if obj is None or obj.behaviors is None:
+        if trigger_obj is None or trigger_obj.behaviors is None:
             return []
         behaviors = []
-        for behavior in obj.behaviors:
+        for behavior in trigger_obj.behaviors:
             if behavior is None:
                 continue
-            filtered_entries = [entry for entry in behavior.entries
-                                if entry.trigger.user_id == current_user.id
-                                and entry.trigger_id == obj.id
-                                and entry.behavior_id == behavior.id]
-            behavior.entries = filtered_entries
-            behaviors.append(behavior)
-        return BehaviorSchemaWithEntries(many=True).dump(behaviors)
+            schema = TriggerBehaviorSchemaWithEntries(context={"trigger": trigger_obj})
+            behaviors.append(schema.dump(behavior))
+        return behaviors
 
     url = ma.Hyperlinks(
         {
@@ -137,25 +154,6 @@ class TriggerSchema(ma.SQLAlchemySchema):
 
 trigger_schema = TriggerSchema()
 triggers_schema = TriggerSchema(many=True)    
-
-class TriggerSchemaWithEntries(ma.SQLAlchemySchema):
-    class Meta:
-        model = Trigger
-        load_instance = True
-    id = ma.auto_field()
-    name = ma.auto_field()
-    description = ma.auto_field()
-    user_id = ma.auto_field()
-
-    entries = ma.Method("get_user_entries")
-
-    def get_user_entries(self, obj):
-        if obj is None:
-            return []
-        filtered_entries = [entry for entry in obj.entries
-                            if entry.trigger.user_id == current_user.id
-                            and entry.trigger_id == obj.id]
-        return entries_schema.dump(filtered_entries)
 
 
 class UserSchema(ma.SQLAlchemySchema):
@@ -246,7 +244,6 @@ class Triggers(Resource):
             db.session.rollback()
             return {'errors': [str(e)]}, 400
     
-
 class Entries(Resource):
     @login_required
     def post(self):
@@ -274,8 +271,6 @@ class Entries(Resource):
             db.session.rollback()
             return {'errors': [str(e)]}, 400
 
-
-
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(Behaviors, '/behaviors')
@@ -285,4 +280,3 @@ api.add_resource(Entries, '/entries')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
-

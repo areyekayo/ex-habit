@@ -73,7 +73,7 @@ const userSlice = createSlice({
             existingBehavior.entries.push(entry)
         },
         addTriggerToUser(state, action) {
-            const {trigger} = action.payload;
+            const trigger = action.payload;
             state.user.triggers = [...state.user.triggers, trigger]
         }
     },
