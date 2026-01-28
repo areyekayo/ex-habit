@@ -77,6 +77,43 @@ const userSlice = createSlice({
         addTriggerToUser(state, action) {
             const trigger = action.payload;
             state.user.triggers = [...state.user.triggers, trigger]
+        },
+        updateUserEntry(state, action) {
+            const updatedEntry = action.payload;
+            if (!state.user || !state.user.triggers) return;
+
+            // Create new triggers array with updated trigger
+            const newTriggers = state.user.triggers.map(trigger => {
+                if (trigger.id !== updatedEntry.trigger_id) return trigger;
+
+                // Update behaviors for this trigger
+                if (!trigger.behaviors) return trigger;
+
+                const newBehaviors = trigger.behaviors.map(behavior => {
+                    if (behavior.id !== updatedEntry.behavior_id) return behavior;
+
+                    // Update entries for this behavior
+                    const newEntries = behavior.entries.map(entry =>
+                        entry.id === updatedEntry.id ? updatedEntry : entry
+                    );
+
+                    return {
+                        ...behavior,
+                        entries: newEntries
+                    };
+                });
+
+                return {
+                    ...trigger,
+                    behaviors: newBehaviors
+                };
+            });
+
+            // Replace the user object with updated triggers
+            state.user = {
+                ...state.user,
+                triggers: newTriggers
+            };
         }
     },
     extraReducers: (builder) => {
@@ -111,5 +148,5 @@ const userSlice = createSlice({
             })
     }
 })
-export const {logout, addEntryToTriggerBehavior, addTriggerToUser} = userSlice.actions;
+export const {logout, addEntryToTriggerBehavior, addTriggerToUser, updateUserEntry} = userSlice.actions;
 export default userSlice.reducer;

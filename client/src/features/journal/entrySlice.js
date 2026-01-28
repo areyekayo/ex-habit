@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import { addEntryToTriggerBehavior } from "../users/userSlice";
+import { addEntryToTriggerBehavior, updateUserEntry } from "../users/userSlice";
 
 export const addEntry = createAsyncThunk(
     'entries/addEntry',
@@ -21,6 +21,21 @@ export const addEntry = createAsyncThunk(
         return data
     }
 );
+
+export const updateEntry = createAsyncThunk(
+    'entries/updateEntry',
+    async (entry, thunkAPI) => {
+        const response = await fetch(`/entries/${entry.id}`, {
+            method: "PATCH",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(entry)
+        })
+        if (!response.ok) throw new Error('Failed to update entry');
+        const data = await response.json()
+        thunkAPI.dispatch(updateUserEntry({entry: data}))
+        return data
+    }
+)
 
 const entrySlice = createSlice({
     name: 'entries',

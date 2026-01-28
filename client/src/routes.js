@@ -1,10 +1,9 @@
 import App from "./App" ;
 import Home from "./features/users/Home";
 import Login from "./features/users/Login";
-import BehaviorCollection from "./features/behaviors/BehaviorCollection";
-import BehaviorCard from "./features/behaviors/BehaviorCard";
 import TriggerCollection from "./features/triggers/TriggerCollection";
 import TriggerCard from "./features/triggers/TriggerCard";
+import EntryCard from "./features/journal/Entry";
 
 const routes = [
     {
@@ -26,6 +25,10 @@ const routes = [
             {
                 path: "/triggers/:id",
                 element: <TriggerCard />
+            },
+            {
+                path: "/entries/:id",
+                element: <EntryCard />
             }
         ]
     }

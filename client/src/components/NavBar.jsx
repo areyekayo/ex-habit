@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 function NavBar() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const {user, isAuthenticated} = useSelector((state) => state.user)
+    const {isAuthenticated} = useSelector((state) => state.user)
 
     const handleLogout = () => {
         fetch('/logout',
@@ -14,7 +14,7 @@ function NavBar() {
             .then((r) => {
                 if (r.ok) {
                     dispatch(logout());
-                    navigate('/login');
+                    navigate('/login', {replace: true, state: null});
                 }
             })
         };

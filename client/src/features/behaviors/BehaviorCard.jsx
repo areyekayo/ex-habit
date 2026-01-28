@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 function BehaviorCard({behavior}){
     const {id, name, type, description, entries} = behavior;
@@ -12,13 +13,11 @@ function BehaviorCard({behavior}){
                 <p>{description}</p>
                 <h3>Entries</h3>
                 {entries.map(entry => (
-                        <div key={entry.id}>
-                            <h4>{entry.created_timestamp}</h4>
-                            <p>{entry.description}</p>
-                            <p>Reward: {entry.reward}</p>
-                            <p>Result: {entry.result}</p>
-                            <p>Mood: {entry.mood}</p>
-                        </div>
+                    <h4 key={entry.id}>
+                        <Link to={`/entries/${entry.id}`}>
+                            {entry.created_timestamp}
+                        </Link>
+                    </h4>
                 ))}
             </div>
         </>

@@ -235,6 +235,28 @@ class Entries(Resource):
         except Exception as e:
             db.session.rollback()
             return {'errors': [str(e)]}, 400
+        
+class EntryById(Resource):
+    @login_required
+    def patch(self, id):
+        user = User.query.get(current_user.id)
+        
+        entry = Entry.query.get(id)
+
+        if user.id != entry.user.id:
+            return {'error': 'Unauthorized'}, 401
+
+        if entry:
+            data = request.get_json()
+            for attr, value in data.items():
+                setattr(entry, attr, value)
+            db.session.add(entry)
+            db.session.commit()
+
+            return entry_schema.dump(entry), 200
+        
+        else:
+            return {'error': 'Entry no tfound'}, 404
 
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
@@ -242,6 +264,7 @@ api.add_resource(Behaviors, '/behaviors')
 api.add_resource(CurrentUser, '/current_user')
 api.add_resource(Triggers, '/triggers')
 api.add_resource(Entries, '/entries')
+api.add_resource(EntryById, '/entries/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
