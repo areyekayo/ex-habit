@@ -1,8 +1,75 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { setAllTriggers } from "../triggers/triggerSlice";
+import { setAllEntries } from "../journal/entrySlice";
+
+function normalizeUserResponse(userApiResponse) {
+    const user = {
+        id: userApiResponse.id,
+        username: userApiResponse.username,
+        triggerIds: [],
+        behaviorIds: [],
+        entryIds: [],
+    };
+    const triggers = {};
+    const behaviors = {};
+    const entries = {};
+
+    userApiResponse.triggers.forEach(trigger => {
+        user.triggerIds.push(trigger.id);
+
+        const behaviorIdsForTrigger = [];
+        const entryIdsForTrigger = [];
+        trigger.behaviors.forEach(behavior => {
+            if (!user.behaviorIds.includes(behavior.id)){
+                user.behaviorIds.push(behavior.id)
+            }
+            behaviorIdsForTrigger.push(behavior.id);
+
+            const entryIdsForBehavior = [];
+            behavior.entries.forEach(entry => {
+                entryIdsForBehavior.push(entry.id);
+                entryIdsForTrigger.push(entry.id);
+                user.entryIds.push(entry.id);
+                entries[entry.id] = {
+                    ...entry
+                };
+            });
+
+            behaviors[behavior.id] = {
+                ...behavior,
+                entryIds: entryIdsForBehavior
+            };
+        });
+        triggers[trigger.id] = {
+            id: trigger.id,
+            name: trigger.name,
+            description: trigger.description,
+            entryIds: entryIdsForTrigger,
+            behaviorIds: behaviorIdsForTrigger
+        };
+    });
+    
+    return {
+        user,
+        triggers: {
+            entities: triggers,
+            ids: Object.keys(triggers).map(id => parseInt(id)),
+        },
+        behaviors: {
+            entities: behaviors,
+            ids: Object.keys(behaviors).map(id => parseInt(id)),
+        },
+        entries: {
+            entities: entries,
+            ids: Object.keys(entries).map(id => parseInt(id)),
+        }
+    }
+}
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
-    async (userCredentials, {rejectWithValue}) => {
+    async (userCredentials, thunkAPI) => {
+        const {rejectWithValue} = thunkAPI;
         try {
         const response = await fetch('/login', {
             method: "POST",
@@ -15,7 +82,10 @@ export const loginUser = createAsyncThunk(
             return rejectWithValue(errorData.errors || {login: ["Login failed"]})
         }
         const data = await response.json()
-        return data;
+        const normalizedData = normalizeUserResponse(data)
+        thunkAPI.dispatch(setAllTriggers(Object.values(normalizedData.triggers.entities)))
+        thunkAPI.dispatch(setAllEntries(Object.values(normalizedData.entries.entities)))
+        return normalizedData.user;
     } catch (error) {
         return rejectWithValue({login: [error.message]})
     }
@@ -23,15 +93,19 @@ export const loginUser = createAsyncThunk(
 
 export const fetchCurrentUser = createAsyncThunk(
     'user/fetchCurrentUser',
-    async (_, {rejectWithValue}) => {
+    async (_, {rejectWithValue, thunkAPI}) => {
         try {
         const response = await fetch('/current_user', {credentials: "include"});
     
     if (!response.ok) {
         return rejectWithValue("Not logged in");
     }
-    const user = await response.json();
-    return user;
+    const data = await response.json();
+    const normalizedData = normalizeUserResponse(data)
+    thunkAPI.dispatch({type: 'triggers/setAll', payload: normalizedData.triggers.entities})
+    thunkAPI.dispatch({type: 'entries/setAll', payload: normalizedData.entries.entities})
+    return normalizedData.user;
+
     }
     catch (error){
         return rejectWithValue(error.message)
@@ -54,67 +128,6 @@ const userSlice = createSlice({
             state.error = null;
             state.isAuthenticated = false;
         },
-        addEntryToTriggerBehavior(state, action) {
-            const {triggerId, behaviorId, behavior, entry } = action.payload;
-            const trigger = state.user.triggers.find(t => t.id === triggerId);
-            if (!trigger) return;
-            let existingBehavior = trigger.behaviors?.find(b => b.id === behaviorId);
-
-            if(!existingBehavior) {
-                if (!trigger.behaviors) trigger.behaviors = [];
-                const newBehavior = {
-                    ...behavior,
-                    entries: behavior.entries ? [...behavior.entries] : [],
-                };
-                trigger.behaviors.push(newBehavior);
-                existingBehavior = newBehavior
-                state.user.behaviors.push(existingBehavior)
-            }
-            if (!existingBehavior.entries) existingBehavior.entries = []
-            existingBehavior.entries.push(entry)
-
-        },
-        addTriggerToUser(state, action) {
-            const trigger = action.payload;
-            state.user.triggers = [...state.user.triggers, trigger]
-        },
-        updateUserEntry(state, action) {
-            const updatedEntry = action.payload;
-            if (!state.user || !state.user.triggers) return;
-
-            // Create new triggers array with updated trigger
-            const newTriggers = state.user.triggers.map(trigger => {
-                if (trigger.id !== updatedEntry.trigger_id) return trigger;
-
-                // Update behaviors for this trigger
-                if (!trigger.behaviors) return trigger;
-
-                const newBehaviors = trigger.behaviors.map(behavior => {
-                    if (behavior.id !== updatedEntry.behavior_id) return behavior;
-
-                    // Update entries for this behavior
-                    const newEntries = behavior.entries.map(entry =>
-                        entry.id === updatedEntry.id ? updatedEntry : entry
-                    );
-
-                    return {
-                        ...behavior,
-                        entries: newEntries
-                    };
-                });
-
-                return {
-                    ...trigger,
-                    behaviors: newBehaviors
-                };
-            });
-
-            // Replace the user object with updated triggers
-            state.user = {
-                ...state.user,
-                triggers: newTriggers
-            };
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -148,5 +161,5 @@ const userSlice = createSlice({
             })
     }
 })
-export const {logout, addEntryToTriggerBehavior, addTriggerToUser, updateUserEntry} = userSlice.actions;
+export const {logout} = userSlice.actions;
 export default userSlice.reducer;

@@ -9,23 +9,10 @@ function EntryCard(){
     const {id} = useParams();
     const entryId = parseInt(id, 10);
     const user = useSelector(state => state.user.user);
+    const entry = useSelector(state => state.entries.entities[entryId])
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const dispatch = useDispatch();
-
-    let entry = null;
-    if (user) {
-        for (const trigger of user.triggers){
-            if (!trigger.behaviors) continue;
-            for (const behavior of trigger.behaviors) {
-                if (behavior.entries) {
-                    entry = behavior.entries.find(e => e.id === entryId)
-                    if (entry) break;
-                };
-            };
-            if (entry) break;
-        }
-    }
     
     const formSchema = yup.object().shape({
         description: yup.string().required("Enter a description").min(5, "Description must be at least 5 characters").max(500, "Description must be less than 500 characters"),

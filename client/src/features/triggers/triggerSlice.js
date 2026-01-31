@@ -1,20 +1,18 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 import { addTriggerToUser } from "../users/userSlice";
 
-export const fetchTriggers = createAsyncThunk(
-    'triggers/fetchTriggers',
-    async () => {
-        const response = await fetch('/triggers');
-        if (!response.ok) {
-            throw new Error('Failed to fetch triggers');
-        }
-        return await response.json()
-    }
-)
+const triggersAdapter = createEntityAdapter({
+    sortComparer: (a, b) => a.name.localeCompare(b.name)
+});
 
-export const addTrigger = createAsyncThunk(
+const initialState = triggersAdapter.getInitialState({
+    status: 'idle',
+    error: null
+})
+
+export const createTrigger = createAsyncThunk(
     'triggers/addTrigger',
-    async (newTrigger, thunkAPI) => {
+    async (newTrigger) => {
         const response = await fetch('/triggers', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -22,37 +20,55 @@ export const addTrigger = createAsyncThunk(
         });
         if (!response.ok) throw new Error('Failed to add trigger');
         const data = await response.json()
-        thunkAPI.dispatch(addTriggerToUser(data))
+     //   thunkAPI.dispatch(addTriggerToUser(data))
         return data
     }
 )
 
+
 const triggerSlice = createSlice({
     name: 'triggers',
-    initialState: {
-        list: [],
-        status: 'idle',
-        error: null,
+    initialState,
+    reducers: {
+        setAllTriggers(state, action) {
+            triggersAdapter.setAll(state, action.payload);
+        },
+        addTrigger: triggersAdapter.addOne,
+        updateTrigger: triggersAdapter.updateOne,
+        removeTrigger: triggersAdapter.removeOne,
+        addEntryToTrigger(state, action) {
+            const {triggerId, entryId} = action.payload;
+            const trigger = state.entities[triggerId];
+            if (trigger) {
+                if (!trigger.entryIds) {
+                    trigger.entryIds = []
+                }
+                if (!trigger.entryIds.includes(entryId)){
+                    trigger.entryIds.push(entryId)
+                }
+            }
+        },
     },
-    reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchTriggers.pending, (state) => {
-                state.status = 'loading';
+            .addCase(createTrigger.pending, (state) => {
+                state.status = "loading";
             })
-            .addCase(fetchTriggers.fulfilled, (state, action) => {
-                state.status = 'succeeded';
-                state.list = action.payload;
+            .addCase(createTrigger.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                triggersAdapter.addOne(state, action.payload)
             })
-            .addCase(fetchTriggers.rejected, (state, action) => {
+            .addCase(createTrigger.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
             })
-            .addCase(addTrigger.fulfilled, (state, action) => {
-                state.status = "succeeded";
-                state.list = action.payload ;
-            })
     }
 });
-export const {addEntryToTrigger} = triggerSlice.actions;
+export const {
+    selectAll: selectAllTriggers,
+    selectById: selectTriggerById,
+    selectIds: selectTriggerIds,
+} = triggersAdapter.getSelectors(state => state.triggers);
+
+export const {setAllTriggers, addTrigger, updateTrigger, removeTrigger, addEntryToTrigger} = triggerSlice.actions;
 export default triggerSlice.reducer

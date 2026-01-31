@@ -4,16 +4,23 @@ import NavBar from './components/NavBar';
 import { fetchCurrentUser, logout } from "./features/users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { fetchBehaviors } from "./features/behaviors/behaviorSlice";
 
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const {user, isAuthenticated, status} = useSelector((state) => state.user);
+  const behaviorStatus = useSelector((state) => state.behaviors.status);
 
   useEffect(()=> {
     dispatch(fetchCurrentUser());
   }, [dispatch])
+
+  useEffect(() => {
+    if (behaviorStatus === 'idle') {
+        dispatch(fetchBehaviors());
+      }}, [behaviorStatus, dispatch]);
 
   useEffect(() => {
     const protectedPaths = ['/home', '/behaviors', '/triggers'];

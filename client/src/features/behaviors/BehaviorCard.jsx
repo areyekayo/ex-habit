@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function BehaviorCard({behavior}){
-    const {id, name, type, description, entries} = behavior;
+    const {id, name, type, description} = behavior;
+    const user = useSelector(state => state.user.user);
+
+    const entries = useSelector(state => {
+        if (!user || !user.entryIds) return null
+        return user.entryIds.map(entryId => {
+            return state.entries.entities[entryId]
+        })
+    })
+
 
     if (!behavior) return <div>Behavior not found</div>;
 

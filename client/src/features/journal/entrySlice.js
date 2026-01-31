@@ -1,5 +1,15 @@
-import {createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import { addEntryToTriggerBehavior, updateUserEntry } from "../users/userSlice";
+import {createSlice, createAsyncThunk, createEntityAdapter} from "@reduxjs/toolkit";
+import { updateUserEntry } from "../users/userSlice";
+import { addEntryToTrigger } from "../triggers/triggerSlice";
+
+const entriesAdapter = createEntityAdapter({
+    sortComparer: (a, b) => new Date(b.created_timestamp) - new Date(a.created_timestamp),
+});
+
+const initialState = entriesAdapter.getInitialState({
+    status: 'idle',
+    error: null
+})
 
 export const addEntry = createAsyncThunk(
     'entries/addEntry',
@@ -10,21 +20,19 @@ export const addEntry = createAsyncThunk(
             body: JSON.stringify(newEntry)
         });
         if (!response.ok) throw new Error('Failed to add entry');
-        const data = await response.json()
+        const data = await response.json();
+        const triggerId = data['trigger_id']
+        const entryId = data['entry_id']
         const state = thunkAPI.getState();
-        const behavior = state.behaviors.list.find(b => b.id === data.behavior_id)
-        thunkAPI.dispatch(addEntryToTriggerBehavior({
-            triggerId: data.trigger_id, 
-            behaviorId: data.behavior_id,
-            behavior, 
-            entry: data}));
+
+        thunkAPI.dispatch(addEntryToTrigger(data))
         return data
     }
 );
 
 export const updateEntry = createAsyncThunk(
     'entries/updateEntry',
-    async (entry, thunkAPI) => {
+    async (entry) => {
         const response = await fetch(`/entries/${entry.id}`, {
             method: "PATCH",
             headers: {'Content-Type': 'application/json'},
@@ -32,26 +40,50 @@ export const updateEntry = createAsyncThunk(
         })
         if (!response.ok) throw new Error('Failed to update entry');
         const data = await response.json()
-        thunkAPI.dispatch(updateUserEntry({entry: data}))
         return data
     }
 )
 
 const entrySlice = createSlice({
     name: 'entries',
-    initialState: {
-        list: [],
-        status: 'idle',
-        error: null,
+    initialState,
+    reducers: {
+        setAllEntries(state, action) {
+            entriesAdapter.setAll(state, action.payload);
+        }
     },
-    reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(addEntry.pending, (state) => {
+                state.status = "loading";
+            })
             .addCase(addEntry.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.list = action.payload;
+                entriesAdapter.addOne(state, action.payload);
+            })
+            .addCase(addEntry.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
+            })
+            .addCase(updateEntry.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(updateEntry.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                entriesAdapter.upsertOne(state, action.payload);
+            })
+            .addCase(updateEntry.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
             })
     }
 })
 
+export const {
+    selectAll: selectAllEntries,
+    selectById: selectEntryById,
+    selectIds: selectEntryIds,
+} = entriesAdapter.getSelectors(state => state.entries)
+
+export const {setAllEntries} = entrySlice.actions;
 export default entrySlice.reducer;

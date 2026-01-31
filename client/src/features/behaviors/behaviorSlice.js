@@ -1,5 +1,13 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
 
+const behaviorsAdapter = createEntityAdapter({
+    sortComparer: (a,b) => a.name.localeCompare(b.name),
+})
+
+const initialState = behaviorsAdapter.getInitialState({
+    status: 'idle',
+    error: null
+});
 
 export const fetchBehaviors = createAsyncThunk(
     'behaviors/fetchBehaviors',
@@ -8,7 +16,9 @@ export const fetchBehaviors = createAsyncThunk(
         if (!response.ok) {
             throw new Error('Failed to fetch behaviors');
         }
-        return await response.json()
+        const data = await response.json()
+
+        return data
     }
 );
 
@@ -27,20 +37,12 @@ export const addBehavior = createAsyncThunk(
 
 const behaviorSlice = createSlice({
     name: 'behaviors',
-    initialState: {
-        list: [],
-        status: 'idle',
-        error: null,
-    },
+    initialState,
     reducers: {
-        addEntryToBehavior(state, action){
-            const {behaviorId, entry} = action.payload;
-            const behavior = state.list.find(b => b.id === behaviorId)
-            if (behavior){
-                if (!behavior.entries) behavior.entries = [];
-                behavior.entires.push(entry)
-            }
-        }
+        setAllBehaviors(state, action){
+            behaviorsAdapter.setAll(state, action.payload);
+        },
+        addBehavior: behaviorsAdapter.addOne,
     },
     extraReducers: (builder) => {
         builder
@@ -49,17 +51,23 @@ const behaviorSlice = createSlice({
             })
             .addCase(fetchBehaviors.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.list = action.payload;
+                behaviorsAdapter.setAll(state, action.payload);
             })
             .addCase(fetchBehaviors.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
             })
             .addCase(addBehavior.fulfilled, (state, action) => {
-                state.list.push(action.payload);
+                behaviorsAdapter.addOne(state, action.payload);
             })
     }
 });
-export const {addEntryToBehavior} = behaviorSlice.actions
+
+export const {
+    selectAll: selectAllBehaviors,
+    selectById: selectBehaviorById,
+    selectIds: selectBehaviorIds,
+} = behaviorsAdapter.getSelectors(state => state.behaviors)
+export const {addEntryToBehavior, setAllBehaviors } = behaviorSlice.actions
 
 export default behaviorSlice.reducer

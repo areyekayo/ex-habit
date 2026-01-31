@@ -5,11 +5,17 @@ import BehaviorCard from "../behaviors/BehaviorCard";
 function TriggerCard(){
     const {id} = useParams();
     const triggerId = parseInt(id, 10)
+    const user = useSelector(state => state.user.user)
 
     const trigger = useSelector(state => {
-        const user = state.user.user;
-        if (!user || !user.triggers) return null
-        return user.triggers.find(t => t.id === triggerId)
+        if (!user || !user.triggerIds) return null
+        return state.triggers.entities[triggerId]
+    })
+    const behaviors = useSelector(state => {
+        if (!user || !user.behaviorIds) return null
+        return trigger.behaviorIds.map(behaviorId => {
+            return state.behaviors.entities[behaviorId]
+        })
     })
 
     if (!trigger) return <div>Trigger not found</div>
@@ -19,8 +25,8 @@ function TriggerCard(){
             <h2>{trigger.name}</h2>
             <p>{trigger.description}</p>
             <h3>Related Habits</h3>
-            {trigger && trigger.behaviors.length > 0 ? (
-                trigger.behaviors.map((behavior) => (
+            {trigger && behaviors.length > 0 ? (
+                behaviors.map((behavior) => (
                     <BehaviorCard key={behavior.id} behavior={behavior}/>
                 ))
             ) : (

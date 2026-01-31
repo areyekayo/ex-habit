@@ -6,7 +6,7 @@ import BehaviorForm from "./BehaviorForm";
 
 function BehaviorCollection() {
     const dispatch = useDispatch();
-    const behaviors = useSelector(state => state.behaviors.list);
+    const behaviors = useSelector(state => state.behaviors.entities);
     const status = useSelector(state => state.behaviors.status);
     const error = useSelector(state => state.behaviors.error);
 
