@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { updateEntry } from "./entrySlice";
+import { updateEntry } from "../users/userSlice";
 
 function EntryCard(){
     const {id} = useParams();
@@ -53,10 +53,7 @@ function EntryCard(){
 
     if (!user) return <div>Loading user...</div>
     if (!entry) return <div>Entry not found</div>
-
-
-
-
+    
     return (
         <>
             <h4>{entry.created_timestamp}</h4>

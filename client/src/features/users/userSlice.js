@@ -212,7 +212,10 @@ const userSlice = createSlice({
             })
             .addCase(createTrigger.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                triggersAdapter.addOne(state, action.payload)
+                triggersAdapter.addOne(state.triggers, action.payload)
+                if (state.user) {
+                    state.user.triggerIds.push(action.payload.id)
+                }
             })
             .addCase(createTrigger.rejected, (state, action) => {
                 state.status = 'failed';
@@ -223,7 +226,7 @@ const userSlice = createSlice({
             })
             .addCase(addEntry.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                entriesAdapter.addOne(state, action.payload);
+                entriesAdapter.addOne(state.entries, action.payload);
             })
             .addCase(addEntry.rejected, (state, action) => {
                 state.status = "failed";

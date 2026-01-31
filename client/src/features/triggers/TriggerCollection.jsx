@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 function TriggerCollection() {
     const {user, status, error} = useSelector(state => state.user);
     const triggers = useSelector(state => state.user.triggers.entities)
+    console.log('triggers', triggers)
 
     if (status === 'loading'){
         return <div>Loading triggers...</div>
@@ -20,6 +21,7 @@ function TriggerCollection() {
                 <h3>Your Triggers</h3>
                 {user.triggerIds.map(triggerId => {
                     const trigger = triggers[triggerId];
+                    console.log('trigger', trigger)
                     if (!trigger) return null;
                     return (
                         <h4 key={trigger.id}>
