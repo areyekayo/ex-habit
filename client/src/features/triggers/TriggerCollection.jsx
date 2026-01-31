@@ -1,10 +1,9 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { selectTriggerById } from "./triggerSlice";
 
 function TriggerCollection() {
     const {user, status, error} = useSelector(state => state.user);
-    const triggers = useSelector(state => state.triggers.entities)
+    const triggers = useSelector(state => state.user.triggers.entities)
 
     if (status === 'loading'){
         return <div>Loading triggers...</div>
@@ -27,7 +26,7 @@ function TriggerCollection() {
                             <Link to={`/triggers/${trigger.id}`}>{trigger.name}</Link>
                         </h4>
                     )
-                })};
+                })}
             </div>
         </>
     )

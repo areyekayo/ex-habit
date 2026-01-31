@@ -26,17 +26,18 @@ function LoginForm() {
         validateOnChange: true,
         onSubmit: async (values, {setErrors, setFieldValue}) => {
 
-                const resultAction = await dispatch(loginUser(values));
+            const resultAction = await dispatch(loginUser(values));
+            console.log('Login result:', resultAction)
 
-                if (loginUser.rejected.match(resultAction)) {
-                    if (resultAction.payload?.login) {
-                        setErrors({login: resultAction.payload.login[0]});
-                        setBackendErrors({login: resultAction.payload.login[0]});
-                    }
-                    setFieldValue("password", "");
-                } else {
-                    setBackendErrors({});
+            if (loginUser.rejected.match(resultAction)) {
+                if (resultAction.payload?.login) {
+                    setErrors({login: resultAction.payload.login[0]});
+                    setBackendErrors({login: resultAction.payload.login[0]});
                 }
+                setFieldValue("password", "");
+            } else {
+                setBackendErrors({});
+            }
             }});
 
     

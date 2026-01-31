@@ -13,7 +13,7 @@ function Login(){
         if (user && location.pathname === "/login" && isAuthenticated) {
             navigate("/home", {replace: true})
         }
-    }, [user, navigate, location.pathname])
+    }, [user, isAuthenticated, navigate, location.pathname])
     
     return (
         <div>

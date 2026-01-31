@@ -1,7 +1,7 @@
 import {useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import NavBar from './components/NavBar';
-import { fetchCurrentUser, logout } from "./features/users/userSlice";
+import { fetchCurrentUser, logout, selectUser, selectIsAuthenticated } from "./features/users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { fetchBehaviors } from "./features/behaviors/behaviorSlice";
@@ -10,7 +10,9 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const {user, isAuthenticated, status} = useSelector((state) => state.user);
+  const user = useSelector(selectUser);
+  const status = useSelector((state) => state.user.status);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const behaviorStatus = useSelector((state) => state.behaviors.status);
 
   useEffect(()=> {

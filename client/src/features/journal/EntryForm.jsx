@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import { addEntry } from "./entrySlice";
+import { addEntry } from "../users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBehaviors } from "../behaviors/behaviorSlice";
 
@@ -10,7 +10,7 @@ function EntryForm(){
     const dispatch = useDispatch();
     const {user} = useSelector((state) => state.user)
     const [successMessage, setSuccessMessage] = useState("");
-    const triggers = user?.triggers || [];
+    const triggers = useSelector(state => state.user.triggers.entities)
     const behaviors = useSelector((state) => state.behaviors.entities)
     const behaviorsStatus = useSelector((state) => state.behaviors.status )
 

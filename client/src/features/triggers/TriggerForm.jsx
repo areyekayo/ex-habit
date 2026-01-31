@@ -2,7 +2,7 @@ import {useState, useEffect} from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {useDispatch, useSelector} from "react-redux";
-import { addTrigger } from "./triggerSlice";
+import { createTrigger } from "../users/userSlice";
 
 function TriggerForm(){
     const dispatch = useDispatch()
@@ -23,7 +23,7 @@ function TriggerForm(){
         validateOnChange: true,
         onSubmit: async (values, {resetForm}) => {
             try {
-                await dispatch(addTrigger(values)).unwrap();
+                await dispatch(createTrigger(values));
                 setSuccessMessage("Trigger added successfully");
                 resetForm()
             }

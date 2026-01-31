@@ -5,7 +5,7 @@ import { useState } from "react";
 import TriggerForm from "../triggers/TriggerForm";
 
 function Home() {
-    const {user} = useSelector((state) => state.user)
+    const user = useSelector((state) => state.user.user)
     const [showEntryForm, setShowEntryForm] = useState(false);
     const [showTriggerForm, setShowTriggerForm] = useState(false);
 

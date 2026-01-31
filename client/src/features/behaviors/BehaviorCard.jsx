@@ -8,7 +8,7 @@ function BehaviorCard({behavior}){
     const entries = useSelector(state => {
         if (!user || !user.entryIds) return null
         return user.entryIds.map(entryId => {
-            return state.entries.entities[entryId]
+            return state.user.entries.entities[entryId]
         })
     })
 

@@ -1,6 +1,64 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { setAllTriggers } from "../triggers/triggerSlice";
-import { setAllEntries } from "../journal/entrySlice";
+import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
+
+
+const triggersAdapter = createEntityAdapter({
+    sortComparer: (a, b) => a.name.localeCompare(b.name)
+});
+
+const entriesAdapter = createEntityAdapter({
+    sortComparer: (a, b) => new Date(b.created_timestamp) - new Date(a.created_timestamp),
+});
+
+const initialState = {
+    user: null,
+    isAuthenticated: false,
+    status: 'idle',
+    error: null,
+    triggers: triggersAdapter.getInitialState(),
+    entries: entriesAdapter.getInitialState()
+}
+
+export const createTrigger = createAsyncThunk(
+    'triggers/addTrigger',
+    async (newTrigger) => {
+        const response = await fetch('/triggers', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newTrigger)
+        });
+        if (!response.ok) throw new Error('Failed to add trigger');
+        const data = await response.json()
+        return data
+    }
+)
+
+export const addEntry = createAsyncThunk(
+    'entries/addEntry',
+    async (newEntry) => {
+        const response = await fetch('/entries', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newEntry)
+        });
+        if (!response.ok) throw new Error('Failed to add entry');
+        const data = await response.json();
+        return data
+    }
+);
+
+export const updateEntry = createAsyncThunk(
+    'entries/updateEntry',
+    async (entry) => {
+        const response = await fetch(`/entries/${entry.id}`, {
+            method: "PATCH",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(entry)
+        })
+        if (!response.ok) throw new Error('Failed to update entry');
+        const data = await response.json()
+        return data
+    }
+)
 
 function normalizeUserResponse(userApiResponse) {
     const user = {
@@ -11,34 +69,26 @@ function normalizeUserResponse(userApiResponse) {
         entryIds: [],
     };
     const triggers = {};
-    const behaviors = {};
     const entries = {};
 
-    userApiResponse.triggers.forEach(trigger => {
+    (userApiResponse.triggers || []).forEach(trigger => {
         user.triggerIds.push(trigger.id);
 
         const behaviorIdsForTrigger = [];
         const entryIdsForTrigger = [];
-        trigger.behaviors.forEach(behavior => {
+        (trigger.behaviors || []).forEach(behavior => {
             if (!user.behaviorIds.includes(behavior.id)){
                 user.behaviorIds.push(behavior.id)
             }
             behaviorIdsForTrigger.push(behavior.id);
 
             const entryIdsForBehavior = [];
-            behavior.entries.forEach(entry => {
+            (behavior.entries || []).forEach(entry => {
                 entryIdsForBehavior.push(entry.id);
                 entryIdsForTrigger.push(entry.id);
                 user.entryIds.push(entry.id);
-                entries[entry.id] = {
-                    ...entry
-                };
+                entries[entry.id] = entry;
             });
-
-            behaviors[behavior.id] = {
-                ...behavior,
-                entryIds: entryIdsForBehavior
-            };
         });
         triggers[trigger.id] = {
             id: trigger.id,
@@ -48,16 +98,12 @@ function normalizeUserResponse(userApiResponse) {
             behaviorIds: behaviorIdsForTrigger
         };
     });
-    
+
     return {
         user,
         triggers: {
             entities: triggers,
             ids: Object.keys(triggers).map(id => parseInt(id)),
-        },
-        behaviors: {
-            entities: behaviors,
-            ids: Object.keys(behaviors).map(id => parseInt(id)),
         },
         entries: {
             entities: entries,
@@ -65,6 +111,7 @@ function normalizeUserResponse(userApiResponse) {
         }
     }
 }
+
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
@@ -82,10 +129,7 @@ export const loginUser = createAsyncThunk(
             return rejectWithValue(errorData.errors || {login: ["Login failed"]})
         }
         const data = await response.json()
-        const normalizedData = normalizeUserResponse(data)
-        thunkAPI.dispatch(setAllTriggers(Object.values(normalizedData.triggers.entities)))
-        thunkAPI.dispatch(setAllEntries(Object.values(normalizedData.entries.entities)))
-        return normalizedData.user;
+        return normalizeUserResponse(data)
     } catch (error) {
         return rejectWithValue({login: [error.message]})
     }
@@ -93,7 +137,7 @@ export const loginUser = createAsyncThunk(
 
 export const fetchCurrentUser = createAsyncThunk(
     'user/fetchCurrentUser',
-    async (_, {rejectWithValue, thunkAPI}) => {
+    async (_, {rejectWithValue}) => {
         try {
         const response = await fetch('/current_user', {credentials: "include"});
     
@@ -101,10 +145,7 @@ export const fetchCurrentUser = createAsyncThunk(
         return rejectWithValue("Not logged in");
     }
     const data = await response.json();
-    const normalizedData = normalizeUserResponse(data)
-    thunkAPI.dispatch({type: 'triggers/setAll', payload: normalizedData.triggers.entities})
-    thunkAPI.dispatch({type: 'entries/setAll', payload: normalizedData.entries.entities})
-    return normalizedData.user;
+    return normalizeUserResponse(data)
 
     }
     catch (error){
@@ -115,18 +156,15 @@ export const fetchCurrentUser = createAsyncThunk(
 
 const userSlice = createSlice({
     name: 'user',
-    initialState: {
-        user: null,
-        status: 'idle',
-        error: null,
-        isAuthenticated: false
-    },
+    initialState,
     reducers: {
         logout(state) {
             state.user = null;
             state.status = "idle";
             state.error = null;
             state.isAuthenticated = false;
+            triggersAdapter.removeAll(state.triggers);
+            entriesAdapter.removeAll(state.entries);
         },
     },
     extraReducers: (builder) => {
@@ -136,30 +174,86 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
+                console.log("loginUser fulfilled payload:", action.payload)
                 state.status = 'succeeded';
-                state.user = action.payload;
+                state.user = action.payload.user;
                 state.isAuthenticated = true;
-                state.error = false;
+                state.error = null;
+                triggersAdapter.setAll(state.triggers, Object.values(action.payload.triggers.entities));
+                entriesAdapter.setAll(state.entries, Object.values(action.payload.entries.entities));
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.status = 'failed';
+                state.user = null;
                 state.error = action.payload || action.error.message;
                 state.isAuthenticated = false;
+                triggersAdapter.removeAll(state.triggers);
+                entriesAdapter.removeAll(state.entries);
             })
             .addCase(fetchCurrentUser.pending, (state) => {
                 state.status = "loading";
             })
             .addCase(fetchCurrentUser.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                state.user = action.payload ;
+                state.user = action.payload.user ;
                 state.isAuthenticated = true;
+                triggersAdapter.setAll(state.triggers, Object.values(action.payload.triggers.entities));
+                entriesAdapter.setAll(state.entries, Object.values(action.payload.entries.entities));
             })
             .addCase(fetchCurrentUser.rejected, (state) => {
                 state.status = "failed";
                 state.user = null;
                 state.isAuthenticated = false;
+                triggersAdapter.removeAll(state.triggers);
+                entriesAdapter.removeAll(state.entries);
+            })
+            .addCase(createTrigger.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(createTrigger.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                triggersAdapter.addOne(state, action.payload)
+            })
+            .addCase(createTrigger.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(addEntry.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(addEntry.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                entriesAdapter.addOne(state, action.payload);
+            })
+            .addCase(addEntry.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
+            })
+            .addCase(updateEntry.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(updateEntry.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                entriesAdapter.upsertOne(state, action.payload);
+            })
+            .addCase(updateEntry.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message;
             })
     }
 })
+
+export const selectUser = (state) => state.user.user;
+export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
+export const {
+    selectAll: selectAllTriggers,
+    selectById: selectTriggerById,
+    selectIds: selectTriggerIds,
+} = triggersAdapter.getSelectors(state => state.user.triggers);
+export const {
+    selectAll: selectAllEntries,
+    selectById: selectEntryById,
+    selectIds: selectEntryIds,
+} = entriesAdapter.getSelectors(state => state.user.entries);
 export const {logout} = userSlice.actions;
 export default userSlice.reducer;

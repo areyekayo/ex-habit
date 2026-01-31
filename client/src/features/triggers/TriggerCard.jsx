@@ -9,7 +9,7 @@ function TriggerCard(){
 
     const trigger = useSelector(state => {
         if (!user || !user.triggerIds) return null
-        return state.triggers.entities[triggerId]
+        return state.user.triggers.entities[triggerId]
     })
     const behaviors = useSelector(state => {
         if (!user || !user.behaviorIds) return null

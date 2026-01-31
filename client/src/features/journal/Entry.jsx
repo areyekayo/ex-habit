@@ -9,7 +9,7 @@ function EntryCard(){
     const {id} = useParams();
     const entryId = parseInt(id, 10);
     const user = useSelector(state => state.user.user);
-    const entry = useSelector(state => state.entries.entities[entryId])
+    const entry = useSelector(state => state.user.entries.entities[entryId])
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const dispatch = useDispatch();
