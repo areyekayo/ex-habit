@@ -60,7 +60,7 @@ const behaviorSlice = createSlice({
             .addCase(addBehavior.fulfilled, (state, action) => {
                 behaviorsAdapter.addOne(state, action.payload);
             })
-    }
+        }
 });
 
 export const {

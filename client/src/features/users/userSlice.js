@@ -224,7 +224,27 @@ const userSlice = createSlice({
             })
             .addCase(addEntry.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                entriesAdapter.addOne(state.entries, action.payload);
+                const newEntry = action.payload
+                entriesAdapter.addOne(state.entries, newEntry);
+                if (state.user) {
+                    state.user.entryIds.push(newEntry.id)
+                    const existingBehaviorIds = state.user.behaviorIds || [];
+                    if (!existingBehaviorIds.includes(newEntry.behavior_id)){
+                        state.user.behaviorIds = [...existingBehaviorIds, newEntry.behavior_id]
+                    }
+                }
+                const trigger = state.triggers.entities[newEntry.trigger_id];
+                if (trigger) {
+                    const existingEntryIds = trigger.entryIds || [];
+                    if (!existingEntryIds.includes(newEntry.id)){
+                        trigger.entryIds = [...existingEntryIds, newEntry.id]
+                    }
+                    const existingTriggerBehaviorIds = trigger.behaviorIds || [];
+                    if (!existingTriggerBehaviorIds.includes(newEntry.behavior_id)){
+                        trigger.behaviorIds = [...existingTriggerBehaviorIds, newEntry.behavior_id]
+                    }
+                }
+
             })
             .addCase(addEntry.rejected, (state, action) => {
                 state.status = "failed";

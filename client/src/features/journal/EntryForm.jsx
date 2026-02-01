@@ -10,8 +10,8 @@ function EntryForm(){
     const dispatch = useDispatch();
     const {user} = useSelector((state) => state.user)
     const [successMessage, setSuccessMessage] = useState("");
-    const triggers = useSelector(state => state.user.triggers.entities)
-    const behaviors = useSelector((state) => state.behaviors.entities)
+    const triggers = useSelector(state => Object.values(state.user.triggers.entities));
+    const behaviors = useSelector((state) => Object.values(state.behaviors.entities));
     const behaviorsStatus = useSelector((state) => state.behaviors.status )
 
     useEffect(() => {
