@@ -255,7 +255,7 @@ const userSlice = createSlice({
             })
             .addCase(updateEntry.fulfilled, (state, action) => {
                 state.status = "succeeded";
-                entriesAdapter.upsertOne(state, action.payload);
+                entriesAdapter.upsertOne(state.entries, action.payload);
             })
             .addCase(updateEntry.rejected, (state, action) => {
                 state.status = "failed";
