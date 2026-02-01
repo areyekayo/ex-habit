@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from "@reduxjs/toolkit";
 
-
 const triggersAdapter = createEntityAdapter({
     sortComparer: (a, b) => a.name.localeCompare(b.name)
 });
@@ -174,7 +173,6 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
-                console.log("loginUser fulfilled payload:", action.payload)
                 state.status = 'succeeded';
                 state.user = action.payload.user;
                 state.isAuthenticated = true;
@@ -243,8 +241,8 @@ const userSlice = createSlice({
                 state.status = "failed";
                 state.error = action.error.message;
             })
-    }
-})
+        }
+    })
 
 export const selectUser = (state) => state.user.user;
 export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
