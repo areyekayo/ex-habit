@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import EntryForm from "../journal/EntryForm";
 import { useState } from "react";
 import TriggerForm from "../triggers/TriggerForm";
+import BehaviorCollection from "../behaviors/BehaviorCollection";
 
 function Home() {
     const user = useSelector((state) => state.user.user)
@@ -32,6 +33,8 @@ function Home() {
         
 
             <TriggerCollection />
+
+            <BehaviorCollection />
         </>
     )
 }

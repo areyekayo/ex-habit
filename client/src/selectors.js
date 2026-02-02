@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { selectTriggerById } from "./features/users/userSlice";
+import { selectTriggerById, selectUser } from "./features/users/userSlice";
 import { selectBehaviorById } from "./features/behaviors/behaviorSlice";
 
 export const selectTriggerWithBehaviors = (triggerId) => createSelector(
@@ -37,3 +37,33 @@ export const selectBehaviorWithEntriesByTrigger = (behaviorId, triggerId) =>
             return {behavior, entries}
         }
 )
+
+export const selectBehaviorsForUser = createSelector(
+    selectUser,
+    (state) => state.behaviors.entities,
+    (user, behaviorEntities) => {
+        if (!user || !user.behaviorIds) return [];
+        return user.behaviorIds.map(id => behaviorEntities[id]).filter(Boolean);
+    }
+)
+
+export const selectTriggersForBehavior = (behaviorId) => createSelector(
+    (state) => state.user.triggers.entities,
+    (triggers) => Object.values(triggers).filter(
+        (trigger) => trigger.behaviorIds && trigger.behaviorIds.includes(behaviorId))
+)
+
+export const selectTriggerWithEntriesByBehavior = (behaviorId, triggerId) =>
+    createSelector(
+        state => selectTriggerById(state, triggerId),
+        state => state.user.entries.entities,
+        (trigger, entryEntities) => {
+            if(!trigger) return null;
+
+            const entries = Object.values(entryEntities).filter(
+                entry => entry.trigger_id == trigger.id && entry.behavior_id == behaviorId
+            );
+            console.log('entries in selector', entries)
+            return {trigger, entries}
+        }
+    )

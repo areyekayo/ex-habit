@@ -4,6 +4,7 @@ import Login from "./features/users/Login";
 import TriggerCollection from "./features/triggers/TriggerCollection";
 import TriggerCard from "./features/triggers/TriggerCard";
 import EntryCard from "./features/journal/Entry";
+import BehaviorCard from "./features/behaviors/BehaviorCard";
 
 const routes = [
     {
@@ -29,6 +30,10 @@ const routes = [
             {
                 path: "/entries/:id",
                 element: <EntryCard />
+            },
+            {
+                path: "/behaviors/:id",
+                element: <BehaviorCard />
             }
         ]
     }

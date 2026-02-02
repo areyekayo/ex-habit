@@ -2,13 +2,14 @@ import {useEffect } from "react";
 import { Link } from "react-router-dom";
 import {fetchBehaviors} from './behaviorSlice';
 import {useSelector, useDispatch} from 'react-redux';
-import BehaviorForm from "./BehaviorForm";
+import { selectBehaviorsForUser } from "../../selectors";
 
 function BehaviorCollection() {
     const dispatch = useDispatch();
-    const behaviors = useSelector(state => state.behaviors.entities);
     const status = useSelector(state => state.behaviors.status);
     const error = useSelector(state => state.behaviors.error);
+
+    const behaviorsForUser = useSelector(selectBehaviorsForUser);
 
     useEffect(() => {
         if (status === 'idle') {
@@ -23,18 +24,20 @@ function BehaviorCollection() {
     if (status === 'failed') {
         return <div>Error: {error}</div>
     }
+    if (behaviorsForUser.length === 0){
+        return <div>You don't have any behaviors yet. Add an entry using a behavior.</div>
+    }
 
     return (
         <>
             <div>
-                <h3>Behaviors</h3>
-                {behaviors.map(behavior => (
+                <h3>Your Behaviors</h3>
+                {behaviorsForUser.map(behavior => (
                     <h4 key={behavior.id}>
                         <Link to={`/behaviors/${behavior.id}`} key={behavior.id}>{behavior.name}</Link>
                     </h4>
                 ))}
             </div>
-            <BehaviorForm />
         </>
     )
 }
