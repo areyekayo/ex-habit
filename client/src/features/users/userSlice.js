@@ -31,6 +31,20 @@ export const createTrigger = createAsyncThunk(
     }
 )
 
+export const updateTrigger = createAsyncThunk(
+    'triggers/updateTrigger',
+    async (trigger) => {
+        const response = await fetch(`/triggers/${trigger.id}`, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(trigger)
+        })
+        if (!response.ok) throw new Error('Failed to update trigger');
+        const data = await response.json()
+        return data
+    }
+)
+
 export const addEntry = createAsyncThunk(
     'entries/addEntry',
     async (newEntry) => {
@@ -217,6 +231,17 @@ const userSlice = createSlice({
             })
             .addCase(createTrigger.rejected, (state, action) => {
                 state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(updateTrigger.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(updateTrigger.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                triggersAdapter.upsertOne(state.triggers, action.payload);
+            })
+            .addCase(updateTrigger.rejected, (state, action) => {
+                state.status = "failed";
                 state.error = action.error.message;
             })
             .addCase(addEntry.pending, (state) => {
