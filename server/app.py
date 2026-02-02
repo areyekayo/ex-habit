@@ -192,6 +192,24 @@ class Triggers(Resource):
         except Exception as e:
             db.session.rollback()
             return {'errors': [str(e)]}, 400
+        
+class TriggerById(Resource):
+    @login_required
+    def patch(self, id):
+        user = User.query.get(current_user.id)
+        trigger = Trigger.query.get(id)
+        if user.id != trigger.user_id: return {'error': 'Unauthorized'}, 401
+
+        if trigger:
+            data = request.get_json()
+            for attr, value in data.items():
+                setattr(trigger, attr, value)
+            db.session.add(trigger)
+            db.session.commit()
+            return trigger_schema.dump(trigger), 200
+        
+        else:
+            return {'error': 'Trigger not found'}, 404
     
 class Entries(Resource):
     @login_required
@@ -249,6 +267,7 @@ api.add_resource(CurrentUser, '/current_user')
 api.add_resource(Triggers, '/triggers')
 api.add_resource(Entries, '/entries')
 api.add_resource(EntryById, '/entries/<int:id>')
+api.add_resource(TriggerById, '/triggers/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
