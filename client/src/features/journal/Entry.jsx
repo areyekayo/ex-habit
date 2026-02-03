@@ -1,9 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { updateEntry } from "../users/userSlice";
+import { updateEntry, deleteEntry } from "../users/userSlice";
 
 function EntryCard(){
     const {id} = useParams();
@@ -13,6 +13,22 @@ function EntryCard(){
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [isDeleted, setIsDeleted] = useState(false);
+
+    const handleDelete = async () => {
+        try {
+            await dispatch(deleteEntry(entry)).unwrap();
+            setIsDeleted(true);
+            setSuccessMessage("Entry deleted successfully");
+            setTimeout(() => {
+                setSuccessMessage("")
+                navigate('/home');
+            }, 3000);
+        } catch (error) {
+            console.error('Failed to delete entry', error);
+        }
+    } 
     
     const formSchema = yup.object().shape({
         description: yup.string().required("Enter a description").min(5, "Description must be at least 5 characters").max(500, "Description must be less than 500 characters"),
@@ -43,17 +59,20 @@ function EntryCard(){
                 }
                 await dispatch(updateEntry(updatedEntry)).unwrap();
                 setSuccessMessage("Entry updated successfully");
-                setTimeout(() => setSuccessMessage(""), 4000);
-                setTimeout(() => setShowUpdateForm(false), 4000);
+                setTimeout(() => setSuccessMessage(""), 3000);
+                setTimeout(() => setShowUpdateForm(false), 3000);
                 
             }
             catch (error) {console.error("Form submission failed", error)}
         }
     })
+    if (isDeleted) {
+        return <p style={{color: "green"}}>{successMessage}. Redirecting...</p>
+    }
 
     if (!user) return <div>Loading user...</div>
     if (!entry) return <div>Entry not found</div>
-    
+
     return (
         <>
             <h4>{entry.created_timestamp}</h4>
@@ -63,6 +82,9 @@ function EntryCard(){
             <p>Mood: {entry.mood}</p>
 
             <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
+
+            <button onClick={handleDelete}>Delete Entry</button>
+
             {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
             {showUpdateForm ? (
                 <div>

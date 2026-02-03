@@ -73,6 +73,17 @@ export const updateEntry = createAsyncThunk(
     }
 )
 
+export const deleteEntry = createAsyncThunk(
+    'entries/deleteEntry',
+    async (entry) => {
+        const response = await fetch(`/entries/${entry.id}`, {
+            method: "DELETE"
+        })
+        if (!response.ok) throw new Error('Failed to delete entry');
+        return entry
+    }
+)
+
 function normalizeUserResponse(userApiResponse) {
     const user = {
         id: userApiResponse.id,
@@ -285,6 +296,44 @@ const userSlice = createSlice({
             .addCase(updateEntry.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message;
+            })
+            .addCase(deleteEntry.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(deleteEntry.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                const deletedEntry = action.payload;
+                const entryId = deletedEntry.id
+                const behaviorId = deletedEntry.behavior_id;
+                const triggerId = deletedEntry.trigger_id;
+                console.log('entryId', entryId)
+                console.log('behaviorId', behaviorId)
+                console.log('triggerId,', triggerId)
+
+                entriesAdapter.removeOne(state.entries, entryId);
+
+                if (state.user) {
+                    const existingEntryIds = state.user.entryIds;
+                    if (existingEntryIds.includes(entryId)){
+                        state.user.entryIds = existingEntryIds.filter(id => id !== entryId)
+                    }
+                }
+                const trigger = state.triggers.entities[triggerId]
+                if (trigger) {
+                    const existingEntryIds = trigger.entryIds;
+                    if (existingEntryIds.includes(entryId)){
+                        trigger.entryIds = existingEntryIds.filter(id => id !== entryId)
+                    }
+                }
+                const behaviorStillExists = trigger.entryIds.some(entryId => {
+                    const entry = state.entries.entities[entryId];
+                    return entry && entry.behavior_id === behaviorId
+                })
+                if (!behaviorStillExists) {
+                    trigger.behaviorIds = trigger.behaviorIds.filter(id => id !== behaviorId)
+                    state.user.behaviorIds = state.user.behaviorIds.filter(id => id !== behaviorId)
+                }
             })
         }
     })

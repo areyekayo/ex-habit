@@ -7,7 +7,6 @@ function NestedTriggerCard({trigger, behaviorId}){
     const selectTriggerWithEntries = useMemo(() => selectBehaviorWithEntriesByTrigger(behaviorId, trigger.id), [behaviorId, trigger.id])
 
     const triggerWithEntries = useSelector(selectTriggerWithEntries)
-    console.log('trigger with entries in nested trigger card', triggerWithEntries)
 
     if (!trigger) return <div>Trigger not found</div>
 

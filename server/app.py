@@ -241,11 +241,9 @@ class Entries(Resource):
 class EntryById(Resource):
     @login_required
     def patch(self, id):
-        user = User.query.get(current_user.id)
-        
         entry = Entry.query.get(id)
 
-        if user.id != entry.user.id:
+        if current_user.id != entry.user.id:
             return {'error': 'Unauthorized'}, 401
 
         if entry:
@@ -259,6 +257,16 @@ class EntryById(Resource):
         
         else:
             return {'error': 'Entry no tfound'}, 404
+        
+    @login_required
+    def delete(self, id):
+        entry = Entry.query.get(id)
+        if entry:
+            db.session.delete(entry)
+            db.session.commit()
+            return {}, 204
+        else:
+            return {'error': 'Entry not found'}, 404
 
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')

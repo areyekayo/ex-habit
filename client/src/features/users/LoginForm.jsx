@@ -27,7 +27,6 @@ function LoginForm() {
         onSubmit: async (values, {setErrors, setFieldValue}) => {
 
             const resultAction = await dispatch(loginUser(values));
-            console.log('Login result:', resultAction)
 
             if (loginUser.rejected.match(resultAction)) {
                 if (resultAction.payload?.login) {

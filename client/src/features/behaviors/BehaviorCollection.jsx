@@ -25,7 +25,11 @@ function BehaviorCollection() {
         return <div>Error: {error}</div>
     }
     if (behaviorsForUser.length === 0){
-        return <div>You don't have any behaviors yet. Add an entry using a behavior.</div>
+        return (
+            <div>
+                <h3>Your Behaviors</h3>
+                <p>You don't have any behaviors yet. Add an entry using a behavior.</p>
+            </div>)
     }
 
     return (
