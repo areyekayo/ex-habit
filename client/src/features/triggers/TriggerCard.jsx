@@ -1,9 +1,9 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import NestedBehaviorCard from "../behaviors/NestedBehaviorCard";
 import { selectTriggerWithBehaviors } from "../../selectors";
 import { useMemo } from "react";
-import { updateTrigger } from "../users/userSlice";
+import { updateTrigger, deleteTrigger } from "../users/userSlice";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -16,6 +16,22 @@ function TriggerCard(){
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const dispatch = useDispatch();
+    const [isDeleted, setIsDeleted] = useState(false);
+    const navigate = useNavigate()
+
+    const handleDelete = async () => {
+        try {
+            await dispatch(deleteTrigger(trigger)).unwrap();
+            setIsDeleted(true);
+            setSuccessMessage("Trigger deleted successfully");
+            setTimeout(() => {
+                setSuccessMessage("")
+                navigate('/home')
+            }, 3000);
+        } catch (error) {
+            console.error('Failed to delete trigger', error);
+        }
+    }
 
     const formSchema = yup.object().shape({
         name: yup.string().required("Enter a name").min(5, "Name must be at least 5 characters").max(100, "Name must be less than 100 characters"),
@@ -24,8 +40,8 @@ function TriggerCard(){
 
     const formik = useFormik({
         initialValues: {
-            name: trigger.name,
-            description: trigger.description,
+            name: trigger? trigger.name : "",
+            description: trigger ? trigger.description : "",
         },
         validationSchema: formSchema,
         validateOnChange: true,
@@ -46,7 +62,9 @@ function TriggerCard(){
         }
     });
 
-
+    if (isDeleted) {
+        return <p style={{color: "green"}}>{successMessage}. Redirecting to home...</p>
+    }
     if (!trigger) return <div>Trigger not found</div>
 
     return (
@@ -54,6 +72,9 @@ function TriggerCard(){
             <h2>{trigger.name}</h2>
             <p>{trigger.description}</p>
             <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
+
+            <button onClick={handleDelete}>Delete Trigger</button>
+
             {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
             {showUpdateForm ? (
                 <div>

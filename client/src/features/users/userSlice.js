@@ -45,6 +45,17 @@ export const updateTrigger = createAsyncThunk(
     }
 )
 
+export const deleteTrigger = createAsyncThunk(
+    'triggers/deleteTrigger',
+    async (trigger) => {
+        const response = await fetch(`/triggers/${trigger.id}`, {
+            method: 'DELETE'
+        })
+        if (!response.ok) throw new Error('Failed to delete trigger');
+        return trigger
+    }
+)
+
 export const addEntry = createAsyncThunk(
     'entries/addEntry',
     async (newEntry) => {
@@ -307,9 +318,6 @@ const userSlice = createSlice({
                 const entryId = deletedEntry.id
                 const behaviorId = deletedEntry.behavior_id;
                 const triggerId = deletedEntry.trigger_id;
-                console.log('entryId', entryId)
-                console.log('behaviorId', behaviorId)
-                console.log('triggerId,', triggerId)
 
                 entriesAdapter.removeOne(state.entries, entryId);
 
@@ -320,19 +328,47 @@ const userSlice = createSlice({
                     }
                 }
                 const trigger = state.triggers.entities[triggerId]
-                if (trigger) {
+                if (trigger) { //remove the entryId from associated trigger
                     const existingEntryIds = trigger.entryIds;
                     if (existingEntryIds.includes(entryId)){
                         trigger.entryIds = existingEntryIds.filter(id => id !== entryId)
                     }
                 }
+                // check if the associated behavior is used in other entries
                 const behaviorStillExists = trigger.entryIds.some(entryId => {
                     const entry = state.entries.entities[entryId];
                     return entry && entry.behavior_id === behaviorId
                 })
-                if (!behaviorStillExists) {
+                if (!behaviorStillExists) { //if no entry uses the behavior, remove the behavior Id from trigger and user
                     trigger.behaviorIds = trigger.behaviorIds.filter(id => id !== behaviorId)
                     state.user.behaviorIds = state.user.behaviorIds.filter(id => id !== behaviorId)
+                }
+            })
+            .addCase(deleteTrigger.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
+            .addCase(deleteTrigger.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                const deletedTrigger = action.payload
+                const triggerId = deletedTrigger.id
+                const entryIds = state.triggers.entities[triggerId]?.entryIds || [];
+                triggersAdapter.removeOne(state.triggers, triggerId)
+
+                entryIds.forEach(entryId => { // remove the trigger's entries from state
+                    entriesAdapter.removeOne(state.entries, entryId);
+                    if (state.user) { // remove entryIds from user
+                        state.user.entryids = state.user.entryIds.filter(id => id !== entryId)
+                    }
+                });
+                
+                if (state.user) { // remove the triggerId from user.triggerIds
+                    state.user.triggerIds = state.user.triggerIds.filter(id => id !== triggerId)
+                    const remainingEntries = Object.values(state.entries.entities);
+                    const behaviorsStillInUse = new Set(
+                        remainingEntries.map(entry => entry.behavior_id)
+                    );
+                    state.user.behaviorIds = state.user.behaviorIds.filter(behaviorId => behaviorsStillInUse.has(behaviorId))
                 }
             })
         }

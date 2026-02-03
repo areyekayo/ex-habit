@@ -210,6 +210,20 @@ class TriggerById(Resource):
         
         else:
             return {'error': 'Trigger not found'}, 404
+        
+    @login_required
+    def delete(self, id):
+        user = User.query.get(current_user.id)
+        trigger = Trigger.query.get(id)
+        if user.id != trigger.user_id: return {'error:': 'Unauthorized'}, 401
+
+        if trigger:
+            db.session.delete(trigger)
+            db.session.commit()
+            return {}, 204
+        else:
+            return {'error': 'Trigger not found'}, 404
+            
     
 class Entries(Resource):
     @login_required
@@ -256,7 +270,7 @@ class EntryById(Resource):
             return entry_schema.dump(entry), 200
         
         else:
-            return {'error': 'Entry no tfound'}, 404
+            return {'error': 'Entry not found'}, 404
         
     @login_required
     def delete(self, id):

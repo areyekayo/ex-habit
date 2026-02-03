@@ -63,7 +63,6 @@ export const selectTriggerWithEntriesByBehavior = (behaviorId, triggerId) =>
             const entries = Object.values(entryEntities).filter(
                 entry => entry.trigger_id == trigger.id && entry.behavior_id == behaviorId
             );
-            console.log('entries in selector', entries)
             return {trigger, entries}
         }
     )
