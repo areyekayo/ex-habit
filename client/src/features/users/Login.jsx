@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import LoginForm from "./LoginForm";
 import {useNavigate, useLocation} from "react-router-dom";
 import { useSelector } from "react-redux";
+import SignUpForm from "./SignUpForm";
 
 function Login(){
     const [showLogin, setShowLogin] = useState(true);
@@ -26,7 +27,11 @@ function Login(){
                 </div>
             ) : (
                 <div>
-                    {/*add sign up form here */}
+                    <SignUpForm />
+                    <p>Already have an account?</p>
+                    <button onClick={() => setShowLogin(true)}>
+                        Log In
+                    </button>
                 </div>
             )
         }

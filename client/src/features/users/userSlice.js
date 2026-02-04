@@ -96,6 +96,7 @@ export const deleteEntry = createAsyncThunk(
 )
 
 function normalizeUserResponse(userApiResponse) {
+    // normalizes the user's nested triggers, behaviors, and entries
     const user = {
         id: userApiResponse.id,
         username: userApiResponse.username,
@@ -147,6 +148,27 @@ function normalizeUserResponse(userApiResponse) {
     }
 }
 
+export const signUpUser = createAsyncThunk(
+    'user/signUp',
+    async (userCredentials, thunkAPI) => {
+        const {rejectWithValue} = thunkAPI
+        try {
+            const response = await fetch('/signup', {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(userCredentials),
+            });
+            if (!response.ok){
+                const errorData = await response.json()
+                return rejectWithValue(errorData.errors)
+            }
+            const data = await response.json()
+            return normalizeUserResponse(data)
+        } catch (error) {
+            return rejectWithValue({signup: [error.message]})
+        }
+    }
+)
 
 export const loginUser = createAsyncThunk(
     'user/loginUser',
@@ -204,6 +226,24 @@ const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(signUpUser.pending, (state) => {
+                state.status = 'loading';
+                state.error = null;
+            })
+            .addCase(signUpUser.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.user = action.payload.user;
+                state.isAuthenticated = true;
+                state.error = null;
+                triggersAdapter.setAll(state.triggers, Object.values(action.payload.triggers.entities));
+                entriesAdapter.setAll(state.entries, Object.values(action.payload.entries.entities))
+            })
+            .addCase(signUpUser.rejected, (state, action) => {
+                state.status = 'failed';
+                state.user = null;
+                state.error = action.payload || action.error.message ;
+                state.isAuthenticated = false;
+            })
             .addCase(loginUser.pending, (state) => {
                 state.status = 'loading';
                 state.error = null;
@@ -274,20 +314,21 @@ const userSlice = createSlice({
                 const newEntry = action.payload
                 entriesAdapter.addOne(state.entries, newEntry);
                 if (state.user) {
-                    state.user.entryIds.push(newEntry.id)
+                    state.user.entryIds.push(newEntry.id) // add entry ID to user
                     const existingBehaviorIds = state.user.behaviorIds || [];
+                    // add entry's behavior to user's behavior IDs if not present
                     if (!existingBehaviorIds.includes(newEntry.behavior_id)){
                         state.user.behaviorIds = [...existingBehaviorIds, newEntry.behavior_id]
                     }
                 }
                 const trigger = state.triggers.entities[newEntry.trigger_id];
-                if (trigger) {
+                if (trigger) { // add entry ID to trigger
                     const existingEntryIds = trigger.entryIds || [];
                     if (!existingEntryIds.includes(newEntry.id)){
                         trigger.entryIds = [...existingEntryIds, newEntry.id]
                     }
                     const existingTriggerBehaviorIds = trigger.behaviorIds || [];
-                    if (!existingTriggerBehaviorIds.includes(newEntry.behavior_id)){
+                    if (!existingTriggerBehaviorIds.includes(newEntry.behavior_id)){ // add entry's behavior to trigger if not present
                         trigger.behaviorIds = [...existingTriggerBehaviorIds, newEntry.behavior_id]
                     }
                 }
@@ -364,10 +405,12 @@ const userSlice = createSlice({
                 
                 if (state.user) { // remove the triggerId from user.triggerIds
                     state.user.triggerIds = state.user.triggerIds.filter(id => id !== triggerId)
+                    // check remaining entries for behaviors still in use
                     const remainingEntries = Object.values(state.entries.entities);
                     const behaviorsStillInUse = new Set(
                         remainingEntries.map(entry => entry.behavior_id)
                     );
+                    // remove user behaviors that are no longer in use
                     state.user.behaviorIds = state.user.behaviorIds.filter(behaviorId => behaviorsStillInUse.has(behaviorId))
                 }
             })

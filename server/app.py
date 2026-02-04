@@ -128,6 +128,27 @@ class UserSchema(ma.SQLAlchemySchema):
 
 user_schema = UserSchema()
 
+class SignUp(Resource):
+    def post(self):
+        data = request.get_json()
+        username = data['username']
+        password = data['password']
+        
+        if User.query.filter_by(username=username).first():
+            return {'errors': {'username': ['Username already taken']}}, 422
+        
+        try:
+            user = User(username=data.get('username'))
+            user.password_hash = password
+            db.session.add(user)
+            db.session.commit()
+            login_user(user, remember=True)
+            return user_schema.dump(user), 201
+        except Exception as e:
+            db.session.rollback()
+            return {'errors': {'error': [str(e)]}}, 422
+
+
 class CurrentUser(Resource):
     @login_required
     def get(self):
@@ -282,6 +303,7 @@ class EntryById(Resource):
         else:
             return {'error': 'Entry not found'}, 404
 
+api.add_resource(SignUp, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(Behaviors, '/behaviors')
