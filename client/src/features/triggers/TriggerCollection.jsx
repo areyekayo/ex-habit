@@ -13,12 +13,11 @@ function TriggerCollection() {
     if (status === 'failed'){
         return <div>Error: {error}</div>
     }
-    if (!user || !user.triggerIds?.length) return <p>No triggers.</p>
+    if (!user || !user.triggerIds?.length) return <p>You don't have any triggers yet.</p>
 
     return (
         <>
             <div>
-                <h3>Your Triggers</h3>
                 {user.triggerIds.map(triggerId => {
                     const trigger = triggers[triggerId];
                     if (!trigger) return null;

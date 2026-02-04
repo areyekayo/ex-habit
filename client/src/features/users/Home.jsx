@@ -31,9 +31,10 @@ function Home() {
                 <TriggerForm />
             ) : (<></>)}
         
-
+            <h3>Your Triggers</h3>
             <TriggerCollection />
-
+            
+            <h3>Your Behaviors</h3>
             <BehaviorCollection />
         </>
     )
