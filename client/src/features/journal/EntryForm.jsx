@@ -19,8 +19,15 @@ function EntryForm(){
 
     const openTriggerModal = () => setShowTriggerModal(true);
     const closeTriggerModal = () => setShowTriggerModal(false);
+    const openBehaviorModal = () => setShowBehaviorModal(true);
+    const closeBehaviorModal = () => setShowBehaviorModal(false);
+
     const handleTriggerSuccess = () => {
         closeTriggerModal();
+    }
+
+    const handleBehaviorSuccess = () => {
+        closeBehaviorModal();
     }
 
 
@@ -93,6 +100,7 @@ function EntryForm(){
                         ))}
 
                     </select>
+                    <button type="button" onClick={openBehaviorModal}>Add New Behavior</button>
                      {formik.errors.behavior && <p style={{color: "red"}}>{formik.errors.behavior}</p>}
 
                 <p>Describe what happened when you engaged in this habit loop</p>
@@ -149,6 +157,10 @@ function EntryForm(){
 
             <Modal isOpen={showTriggerModal} onClose={closeTriggerModal}>
                 <TriggerForm onSuccess={handleTriggerSuccess}/>
+            </Modal>
+
+            <Modal isOpen={showBehaviorModal} onClose={closeBehaviorModal}>
+                <BehaviorForm onSuccess={handleBehaviorSuccess} />
             </Modal>
         </div>
     )

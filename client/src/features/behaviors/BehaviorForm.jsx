@@ -1,12 +1,13 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import * as yup from "yup";
 import {useFormik} from "formik";
 import { addBehavior } from "./behaviorSlice";
 import { useDispatch } from "react-redux";
 
-function BehaviorForm() {
+function BehaviorForm({onSuccess}) {
     const dispatch = useDispatch();
     const [successMessage, setSuccessMessage] = useState("");
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const formSchema = yup.object().shape({
         name: yup.string().required("Enter a name for the behavior").min(5, "Name must be at least 5 characters").max(100, "Name must be less than 100 characters"),
@@ -28,10 +29,23 @@ function BehaviorForm() {
                 await dispatch(addBehavior(values)).unwrap();
                 setSuccessMessage("Behavior added successfully")
                 resetForm();
+                setIsSubmitted(true);
             }
             catch (error) { console.error("Form submission failed: ", error);}
         }
     });
+
+    useEffect(() => { // close the form if opened as modal
+        if (isSubmitted) {
+            const timer = setTimeout(() => {
+                if (onSuccess) onSuccess();
+                setSuccessMessage("");
+                setIsSubmitted(false);
+            }, 3000);
+        
+        return () => clearTimeout(timer)
+        }
+    }, [isSubmitted, onSuccess])
 
     return (
         <div>
