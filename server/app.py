@@ -59,7 +59,25 @@ class BehaviorSchema(ma.SQLAlchemySchema):
     name = ma.auto_field()
     description = ma.auto_field()
     type = ma.auto_field()
+
+    triggers = ma.Method("get_nested_trigger_entries")
+
+    def get_nested_trigger_entries(self, behavior_obj):
+        # Function to retrieve triggers with entries that match the parent behavior
+        if behavior_obj is None or behavior_obj.triggers is None:
+            return []
+        triggers = []
+        for trigger in behavior_obj.triggers:
+            if trigger is None:
+                continue
+            if trigger.user_id != current_user.id:
+                continue
+            # Instantiate nested triggers with entries schema, passing the behavior as context
+            schema = BehaviorTriggerSchemaWithEntries(context={"behavior": behavior_obj})
+            triggers.append(schema.dump(trigger))
+        return triggers
     
+
 behavior_schema = BehaviorSchema()
 behaviors_schema = BehaviorSchema(many=True)
 
