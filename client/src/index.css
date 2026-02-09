@@ -5,3 +5,19 @@
   --text: hsla(0, 0%, 100%, 0.88);
 }
 
+.right-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 400px;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+  background-color: white;
+  z-index: 1000;
+  overflow-y: auto;
+
+}
+
+.close-modal-btn {
+  margin: 10px;
+}

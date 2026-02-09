@@ -4,9 +4,10 @@ import { useFormik } from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import { createTrigger } from "../users/userSlice";
 
-function TriggerForm(){
+function TriggerForm({onSuccess}){
     const dispatch = useDispatch()
     const [successMessage, setSuccessMessage] = useState("");
+    const [isSubmitted, setIsSubmitted] = useState(false);
     
     const formSchema = yup.object().shape({
         name: yup.string().required("Enter a name").min(5, "Name must be at least 5 characters").max(100, "Name must be less than 100 characters"),
@@ -25,11 +26,24 @@ function TriggerForm(){
             try {
                 await dispatch(createTrigger(values));
                 setSuccessMessage("Trigger added successfully");
-                resetForm()
+                resetForm();
+                setIsSubmitted(true);
             }
             catch (error) {console.error("Trigger submission failed", error)}
         }
     });
+
+    useEffect(() => { // close the form if opened as modal
+        if (isSubmitted){
+            const timer = setTimeout(() => {
+                if (onSuccess) onSuccess();
+                setSuccessMessage("");
+                setIsSubmitted(false);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isSubmitted, onSuccess])
 
     return (
         <div>

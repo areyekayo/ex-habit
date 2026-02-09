@@ -3,6 +3,7 @@ from flask import request, make_response
 from flask_restful import Resource
 from config import app, db, api, ma
 from flask_login import login_user, login_required, current_user, logout_user
+from auth import login_manager
 from models import User, Behavior, Trigger, Entry
 
 @app.route('/')

@@ -4,15 +4,25 @@ import {useFormik} from "formik";
 import { addEntry } from "../users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBehaviors } from "../behaviors/behaviorSlice";
-
+import Modal from "../../components/Modal";
+import TriggerForm from "../triggers/TriggerForm";
+import BehaviorForm from "../behaviors/BehaviorForm";
 
 function EntryForm(){
     const dispatch = useDispatch();
-    const {user} = useSelector((state) => state.user)
     const [successMessage, setSuccessMessage] = useState("");
     const triggers = useSelector(state => Object.values(state.user.triggers.entities));
     const behaviors = useSelector((state) => Object.values(state.behaviors.entities));
     const behaviorsStatus = useSelector((state) => state.behaviors.status )
+    const [showTriggerModal, setShowTriggerModal] = useState(false);
+    const [showBehaviorModal, setShowBehaviorModal] = useState(false);
+
+    const openTriggerModal = () => setShowTriggerModal(true);
+    const closeTriggerModal = () => setShowTriggerModal(false);
+    const handleTriggerSuccess = () => {
+        closeTriggerModal();
+    }
+
 
     useEffect(() => {
         if (behaviorsStatus === 'idle') {
@@ -67,6 +77,7 @@ function EntryForm(){
                             <option value={trigger.id} key={trigger.id}>{trigger.name}</option>
                         ))}
                     </select>
+                    <button type="button" onClick={openTriggerModal}>Add New Trigger</button>
                      {formik.errors.trigger && <p style={{color: "red"}}>{formik.errors.trigger}</p>}
                 
                 <h4>Select a Behavior</h4>
@@ -134,8 +145,11 @@ function EntryForm(){
 
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit Entry</button>
 
-
             </form>
+
+            <Modal isOpen={showTriggerModal} onClose={closeTriggerModal}>
+                <TriggerForm onSuccess={handleTriggerSuccess}/>
+            </Modal>
         </div>
     )
 }
