@@ -3,7 +3,6 @@ from flask import request, make_response
 from flask_restful import Resource
 from config import app, db, api, ma
 from flask_login import login_user, login_required, current_user, logout_user
-from auth import login_manager
 from models import User, Behavior, Trigger, Entry
 
 @app.route('/')
@@ -27,8 +26,8 @@ class EntrySchema(ma.SQLAlchemySchema):
 entry_schema = EntrySchema()
 entries_schema = EntrySchema(many=True)
 
-class BehaviorTriggerSchemaWithEntries(ma.SQLAlchemySchema):
-    # Behavior > Trigger > Entries Schema
+class NestedTriggerSchemaWithEntries(ma.SQLAlchemySchema):
+    # Schema for Behavior, Nested Trigger, and Entries associated with both
     class Meta:
         model = Trigger
         load_instance = True
@@ -73,15 +72,15 @@ class BehaviorSchema(ma.SQLAlchemySchema):
             if trigger.user_id != current_user.id:
                 continue
             # Instantiate nested triggers with entries schema, passing the behavior as context
-            schema = BehaviorTriggerSchemaWithEntries(context={"behavior": behavior_obj})
+            schema = NestedTriggerSchemaWithEntries(context={"behavior": behavior_obj})
             triggers.append(schema.dump(trigger))
         return triggers
     
 
 behavior_schema = BehaviorSchema()
-behaviors_schema = BehaviorSchema(many=True)
+behaviors_schema = BehaviorSchema(many=True, exclude=('triggers',))
 
-class TriggerBehaviorSchemaWithEntries(ma.SQLAlchemySchema):
+class NestedBehaviorSchemaWithEntries(ma.SQLAlchemySchema):
     # Schema for Trigger, Nested Behavior, and Entries associated with both
     class Meta:
         model = Behavior
@@ -127,7 +126,7 @@ class TriggerSchema(ma.SQLAlchemySchema):
             if behavior is None:
                 continue
             # Instantiate nested behaviors with entries schema, passing trigger as context
-            schema = TriggerBehaviorSchemaWithEntries(context={"trigger": trigger_obj})
+            schema = NestedBehaviorSchemaWithEntries(context={"trigger": trigger_obj})
             behaviors.append(schema.dump(behavior))
         return behaviors
 
