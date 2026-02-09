@@ -50,21 +50,21 @@ if __name__ == '__main__':
         print("Creating triggers...")
         boredom = Trigger(name="Boredom", description="Boredom can make it really easy for me to waste time when I want to be more productive", user=riko)
         work_stress = Trigger(name="Work Stress", description="Work stress is very draining", user=riko)
-        father = Trigger(name="My father", description="My dad is a character and creates a lot of stress in my family", user=riko)
+        commute = Trigger(name="Commuting", description="M commute is very long and makes me feel tired", user=riko)
         free_time = Trigger(name="Free Time", description="Having free time makes me feel like I have a lot of time", user=sam)
         loud_noises = Trigger(name="Loud Noises", description="I feel very sensitive to loud noises", user=sam)
         neighbor = Trigger(name="Neighbor plays loud music", description="My neighbor doesn't understand how thin the walls are", user=alex)
         going_out = Trigger(name="Going out with friends", description="Going out presents so many opportunities to do things that I don't actually want to do", user=steph)
         boss = Trigger(name="My boss micromanaging me", description="I feel like my boss doesn't trust me", user=steph)
 
-        triggers = [boredom, work_stress, father, free_time, loud_noises, neighbor, going_out, boss]
+        triggers = [boredom, work_stress, commute, free_time, loud_noises, neighbor, going_out, boss]
 
         print("Creating entries...")
         entry1 = Entry(description="user: riko, trigger: boredom, behavior: screen time", reward="Destressed", result="Wasted time", mood="Okay", trigger=boredom, behavior=screen_time)
 
         entry2 = Entry(trigger=work_stress, behavior=drinking, description="user: riko, trigger: work stress, behavior: drinking", reward="Feel relieved", result="Hangover", mood="Bad")
 
-        entry3= Entry(trigger=father, behavior=argument, description="user: riko, trigger: father, behavior: argument", reward="Nothing", result="I'm upset", mood="Struggling")
+        entry3= Entry(trigger=commute, behavior=nail_biting, description="user: riko, trigger: commute, behavior: nail biting", reward="Nothing", result="I'm upset", mood="Struggling")
 
         entry4= Entry(trigger=free_time, behavior=screen_time, mood="Good", description="user: sam, trigger: free time, behavior: screen time", reward="Feel relieved", result="I didn't get anything done")
 

@@ -10,7 +10,7 @@ function Login(){
     const navigate = useNavigate();
     const location = useLocation();
 
-    useEffect(() => {
+    useEffect(() => { // redirect authenticated users to home page
         if (user && location.pathname === "/login" && isAuthenticated) {
             navigate("/home", {replace: true})
         }

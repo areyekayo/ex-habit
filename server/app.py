@@ -64,7 +64,7 @@ behavior_schema = BehaviorSchema()
 behaviors_schema = BehaviorSchema(many=True)
 
 class TriggerBehaviorSchemaWithEntries(ma.SQLAlchemySchema):
-    # Trigger > Behavior > Entries schema
+    # Schema for Trigger, Nested Behavior, and Entries associated with both
     class Meta:
         model = Behavior
         load_instance = True
@@ -77,7 +77,7 @@ class TriggerBehaviorSchemaWithEntries(ma.SQLAlchemySchema):
     entries = ma.Method("get_entries_for_trigger")
 
     def get_entries_for_trigger(self, behavior_obj):
-        # Gets entries that patch this behavior and its parent trigger from context. Current user should already match the trigger.
+        # Gets entries that match this behavior and its parent trigger from context. Current user should already match the trigger.
         trigger_obj = self.context.get("trigger")
         if not trigger_obj:
             return []
@@ -217,9 +217,8 @@ class Triggers(Resource):
 class TriggerById(Resource):
     @login_required
     def patch(self, id):
-        user = User.query.get(current_user.id)
         trigger = Trigger.query.get(id)
-        if user.id != trigger.user_id: return {'error': 'Unauthorized'}, 401
+        if current_user.id != trigger.user_id: return {'error': 'Unauthorized'}, 401
 
         if trigger:
             data = request.get_json()
@@ -234,9 +233,8 @@ class TriggerById(Resource):
         
     @login_required
     def delete(self, id):
-        user = User.query.get(current_user.id)
         trigger = Trigger.query.get(id)
-        if user.id != trigger.user_id: return {'error:': 'Unauthorized'}, 401
+        if current_user.id != trigger.user_id: return {'error:': 'Unauthorized'}, 401
 
         if trigger:
             db.session.delete(trigger)
@@ -278,7 +276,7 @@ class EntryById(Resource):
     def patch(self, id):
         entry = Entry.query.get(id)
 
-        if current_user.id != entry.user.id:
+        if current_user.id != entry.trigger.user_id:
             return {'error': 'Unauthorized'}, 401
 
         if entry:
@@ -296,12 +294,14 @@ class EntryById(Resource):
     @login_required
     def delete(self, id):
         entry = Entry.query.get(id)
-        if entry:
-            db.session.delete(entry)
-            db.session.commit()
-            return {}, 204
-        else:
+        if not entry: 
             return {'error': 'Entry not found'}, 404
+        if current_user.id != entry.trigger.user_id:
+            return {'error': 'Unauthorized'}, 401
+        db.session.delete(entry)
+        db.session.commit()
+        return {}, 204
+
 
 api.add_resource(SignUp, '/signup')
 api.add_resource(Login, '/login')

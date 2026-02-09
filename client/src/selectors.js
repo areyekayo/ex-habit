@@ -3,6 +3,7 @@ import { selectTriggerById, selectUser } from "./features/users/userSlice";
 import { selectBehaviorById } from "./features/behaviors/behaviorSlice";
 
 export const selectTriggerWithBehaviors = (triggerId) => createSelector(
+    // Gets a trigger and its associated behaviors, behavior IDs, and entry IDs
     state => selectTriggerById(state, triggerId),
     (state) => state.user.triggers.entities[triggerId]?.entryIds || [],
     (state) => state.user.triggers.entities[triggerId]?.behaviorIds || [],
@@ -25,6 +26,7 @@ export const selectTriggerWithBehaviors = (triggerId) => createSelector(
 
 export const selectBehaviorWithEntriesByTrigger = (behaviorId, triggerId) =>
     createSelector(
+        // Gets a behavior and its entries associated with a trigger
         state => selectBehaviorById(state, behaviorId),
         state => state.user.entries.entities,
         (behavior, entryEntities) => {
@@ -33,12 +35,12 @@ export const selectBehaviorWithEntriesByTrigger = (behaviorId, triggerId) =>
             const entries = Object.values(entryEntities).filter(
                 entry => entry.behavior_id == behavior.id && entry.trigger_id == triggerId
             );
-
             return {behavior, entries}
         }
 )
 
 export const selectBehaviorsForUser = createSelector(
+    // Gets a user's behaviors associated with their entries
     selectUser,
     (state) => state.behaviors.entities,
     (user, behaviorEntities) => {
@@ -48,6 +50,7 @@ export const selectBehaviorsForUser = createSelector(
 )
 
 export const selectTriggersForBehavior = (behaviorId) => createSelector(
+    // Gets a user's triggers associated with a behavior
     (state) => state.user.triggers.entities,
     (triggers) => Object.values(triggers).filter(
         (trigger) => trigger.behaviorIds && trigger.behaviorIds.includes(behaviorId))
@@ -55,6 +58,7 @@ export const selectTriggersForBehavior = (behaviorId) => createSelector(
 
 export const selectTriggerWithEntriesByBehavior = (behaviorId, triggerId) =>
     createSelector(
+        // Gets a trigger and its entries associated with a behavior
         state => selectTriggerById(state, triggerId),
         state => state.user.entries.entities,
         (trigger, entryEntities) => {
