@@ -68,7 +68,7 @@ function EntryForm(){
     });
 
     return (
-        <div>
+        <div className="new-entry-form">
             <form onSubmit={formik.handleSubmit}>
                 <h3>Write An Entry</h3>
                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}

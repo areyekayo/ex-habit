@@ -71,13 +71,15 @@ function TriggerCard(){
         <div>
             <h2>{trigger.name}</h2>
             <p>{trigger.description}</p>
-            <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
+            <div className="button-container">
+                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
 
-            <button onClick={handleDelete}>Delete Trigger</button>
+                <button onClick={handleDelete}>Delete Trigger</button>
+            </div>
 
             {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
             {showUpdateForm ? (
-                <div>
+                <div className="new-entry-form">
                     <form onSubmit={formik.handleSubmit}>
                         <h4>Update Trigger Name</h4>
                         <input
@@ -103,6 +105,7 @@ function TriggerCard(){
             }
 
             <h3>Related Habits</h3>
+            <div className="card-collection">
             {trigger.behaviors.length > 0 ? (
                 trigger.behaviors.map((behavior) => (
                     <NestedBehaviorCard key={behavior.id} behavior={behavior} triggerId={trigger.id}/>
@@ -111,6 +114,7 @@ function TriggerCard(){
                 <p>No entries</p>
             )
         }
+            </div>
         </div>
     )
 }

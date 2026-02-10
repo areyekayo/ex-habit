@@ -74,7 +74,7 @@ function EntryCard(){
     if (!entry) return <div>Entry not found</div>
 
     return (
-        <>
+        <div className="card">
             <h4>{entry.created_timestamp}</h4>
             <p>{entry.description}</p>
             <p>Reward: {entry.reward}</p>
@@ -143,7 +143,7 @@ function EntryCard(){
                     </form>
                 </div>
             ) : (<></>)}
-        </>
+        </div>
     )
     
 }

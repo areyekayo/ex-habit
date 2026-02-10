@@ -20,10 +20,12 @@ function BehaviorCard(){
             <h2>{behavior.name}</h2>
             <p>{behavior.description}</p>
             <h3>Related Triggers</h3>
-            {triggers.length === 0 && <p>No triggers associated with this behavior</p>}
-            {triggers.map((trigger) => (
-                <NestedTriggerCard key={trigger.id} trigger={trigger} behaviorId={behavior.id}/>
-            ))}
+            <div className="card-collection">
+                {triggers.length === 0 && <p>No triggers associated with this behavior</p>}
+                {triggers.map((trigger) => (
+                    <NestedTriggerCard key={trigger.id} trigger={trigger} behaviorId={behavior.id}/>
+                ))}
+            </div>
         </div>
     )
     

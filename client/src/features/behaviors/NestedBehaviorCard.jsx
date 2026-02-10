@@ -13,7 +13,7 @@ function NestedBehaviorCard({behavior, triggerId}){
 
     return (
         <>
-            <div>
+            <div className="card">
                 <h2>{name}</h2>
                 <p>Type: {type}</p>
                 <p>{description}</p>

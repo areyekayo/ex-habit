@@ -17,7 +17,7 @@ function TriggerCollection() {
 
     return (
         <>
-            <div>
+            <section className="list">
                 {user.triggerIds.map(triggerId => {
                     const trigger = triggers[triggerId];
                     if (!trigger) return null;
@@ -27,7 +27,7 @@ function TriggerCollection() {
                         </h4>
                     )
                 })}
-            </div>
+            </section>
         </>
     )
 }

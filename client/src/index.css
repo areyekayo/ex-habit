@@ -1,8 +1,95 @@
-:root {
-  --bg: #282c34;
-  --header: #fff;
-  --link: #61dafb;
-  --text: hsla(0, 0%, 100%, 0.88);
+.App-header {
+  background-color: #000000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  font-family: 'Roboto';
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  text-align: center;
+}
+
+h3 {
+  text-align: center;
+}
+
+.card-collection {
+  align-items: center;
+  justify-content: center;
+  display: grid;
+}
+.card {
+  text-align: center;
+  border: grey solid 1px;
+  padding: 1rem;
+  width: 400px;
+  max-height: fit-content;
+  display: inline-grid;
+  margin: 20px auto;
+  box-shadow: 3px 4px #000000;
+  overflow: scroll;
+}
+
+.new-entry-form {
+  width: 80%;
+  max-width: 400px;
+  margin: 1rem auto;
+  text-align: center;
+  font-family: 'Roboto';
+}
+.new-entry-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.new-entry-form textarea {
+  height: 7rem;
+}
+
+.nav-link{
+  display: inline-block;
+  box-sizing: border-box;
+  width: 150px;
+  padding: 5px;
+  margin: 0 6px 6px;
+  background: rgb(119, 119, 119);
+  text-decoration: none;
+  text-align: center;
+  font-size: 20px ;
+  color: white;
+}
+
+.list {
+  background-color: #e7e6e6;
+  border-radius:  8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgbha(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 400px;
+  text-align: center;
+  font-family: 'Roboto';
 }
 
 .right-modal {
@@ -18,6 +105,28 @@
 
 }
 
+.button-container {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: center;
+  gap: 1rem;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button-container button {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+}
+
+.button {
+  font-size: 15px;
+  font-family: 'Roboto Mono';
+}
+
 .close-modal-btn {
   margin: 10px;
+  font-family: 'Roboto Mono';
 }

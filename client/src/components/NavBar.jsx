@@ -21,11 +21,11 @@ function NavBar() {
 
     return (
         <nav>
-            <NavLink to="/home">Home</NavLink>
+            <NavLink className="nav-link" to="/home">Home</NavLink>
             {isAuthenticated ? (
                 <button onClick={handleLogout}>Logout</button>
             )
-                : (<NavLink to="/login">Login</NavLink>)
+                : (<NavLink className="nav-link" to="/login">Login</NavLink>)
             }
         </nav>
     )

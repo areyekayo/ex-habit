@@ -42,7 +42,7 @@ function LoginForm() {
     }
 
     return (
-        <div>
+        <div className="new-entry-form">
             <h4>Log In</h4>
             <form onSubmit={formik.handleSubmit}>
                 <label htmlFor='username'>Username</label>

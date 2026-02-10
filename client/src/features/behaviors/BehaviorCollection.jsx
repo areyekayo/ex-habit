@@ -33,13 +33,13 @@ function BehaviorCollection() {
 
     return (
         <>
-            <div>
+            <section className="list">
                 {behaviorsForUser.map(behavior => (
                     <h4 key={behavior.id}>
                         <Link to={`/behaviors/${behavior.id}`} key={behavior.id}>{behavior.name}</Link>
                     </h4>
                 ))}
-            </div>
+            </section>
         </>
     )
 }

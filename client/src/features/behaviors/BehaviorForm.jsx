@@ -48,7 +48,7 @@ function BehaviorForm({onSuccess}) {
     }, [isSubmitted, onSuccess])
 
     return (
-        <div>
+        <div className="new-entry-form">
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add A Behavior</h3>
                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
@@ -61,7 +61,7 @@ function BehaviorForm({onSuccess}) {
                     onBlur={formik.handleBlur}
                 >
                     <option value="" disabled>Select a type</option>
-                    <option value="Financial">Financial</option>
+                    <option value="Finance">Finance</option>
                     <option value="Health">Health</option>
                     <option value="Productivity">Productivity</option>
 

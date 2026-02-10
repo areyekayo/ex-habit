@@ -32,7 +32,7 @@ function SignUpForm() {
     })
 
     return (
-        <div>
+        <div className='new-entry-form'>
             <h4>Create An Account</h4>
             <form onSubmit={formik.handleSubmit}>
                 <label htmlFor="username">Username</label>
