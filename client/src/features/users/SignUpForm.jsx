@@ -32,27 +32,30 @@ function SignUpForm() {
     })
 
     return (
-        <div className='new-entry-form'>
+        <div className="new-entry-form">
             <h4>Create An Account</h4>
             <form onSubmit={formik.handleSubmit}>
-                <label htmlFor="username">Username</label>
-                <input 
-                    id="username"
-                    name="username"
-                    onChange={formik.handleChange}
-                    value={formik.values.username}
-                />
-                {formik.errors.username? (<p style={{color: "red"}}>{formik.errors.username}</p>) : (null)}
-
-                <label htmlFor="password">Password</label>
-                <input 
-                    id="password"
-                    name="password"
-                    type="password"
-                    onChange={formik.handleChange}
-                    value={formik.values.password}
-                />
-                {formik.errors.password? (<p style={{color: "red"}}>{formik.errors.password}</p>) : (null)}
+                <div className="form-section">
+                    <label htmlFor="username">Username</label>
+                    <input 
+                        id="username"
+                        name="username"
+                        onChange={formik.handleChange}
+                        value={formik.values.username}
+                    />
+                    {formik.errors.username? (<p style={{color: "red"}}>{formik.errors.username}</p>) : (null)}
+                </div>
+                <div className="form-section">
+                    <label htmlFor="password">Password</label>
+                    <input 
+                        id="password"
+                        name="password"
+                        type="password"
+                        onChange={formik.handleChange}
+                        value={formik.values.password}
+                    />
+                    {formik.errors.password? (<p style={{color: "red"}}>{formik.errors.password}</p>) : (null)}
+                </div>
                 <button type="submit">Sign Up</button>
             </form>
         </div>

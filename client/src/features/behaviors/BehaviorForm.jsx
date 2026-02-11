@@ -52,39 +52,43 @@ function BehaviorForm({onSuccess}) {
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add A Behavior</h3>
                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
+                <div className="form-section">
+                    <h4>Select Behavior Type</h4>
+                    <select
+                        name="type"
+                        value={formik.values.type}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    >
+                        <option value="" disabled>Select a type</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Health">Health</option>
+                        <option value="Productivity">Productivity</option>
 
-                <h4>Select Behavior Type</h4>
-                <select
-                    name="type"
-                    value={formik.values.type}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                >
-                    <option value="" disabled>Select a type</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Health">Health</option>
-                    <option value="Productivity">Productivity</option>
-
-                </select>
+                    </select>
                 {formik.errors.type && <p style={{color: "red"}}>{formik.errors.type}</p>}
-                <h4>Name</h4>
-                <input
-                    type="text"
-                    name="name"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.title} />
-                {formik.errors.name && <p style={{color: "red"}}>{formik.errors.title}</p>}
-
-                <h4>Description</h4>
-                <input
-                    type="text"
-                    name="description"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.description}
-                />
-                {formik.errors.description && <p style={{color: "red"}}>{formik.errors.description}</p>}
+                </div>
+                <div className="form-section">
+                    <h4>Name</h4>
+                    <input
+                        type="text"
+                        name="name"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.title} />
+                    {formik.errors.name && <p style={{color: "red"}}>{formik.errors.title}</p>}
+                </div>
+                <div className="form-section">
+                    <h4>Description</h4>
+                    <textarea
+                        placeholder="Describe the behavior"
+                        name="description"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.description}
+                    />
+                    {formik.errors.description && <p style={{color: "red"}}>{formik.errors.description}</p>}
+                </div>
 
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Add Behavior</button>
             </form>

@@ -22,14 +22,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-  text-align: center;
-}
-
-h2 {
-  text-align: center;
-}
-
+h1,
+h2,
 h3 {
   text-align: center;
 }
@@ -59,6 +53,11 @@ h3 {
   font-family: 'Roboto';
 }
 .new-entry-form form {
+  border: 1px solid #ccc;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  background-color: #fafafa;
+  box-shadow: 0 0 0 px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -66,6 +65,42 @@ h3 {
 
 .new-entry-form textarea {
   height: 7rem;
+}
+
+.new-entry-form form h3,
+.new-entry-form form h4,
+.new-entry-form form p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.new-entry-form form input,
+.new-entry-form form textarea {
+  margin-bottom: 0.5rem;
+}
+
+.new-entry-form form select,
+.new-entry-form form button[type="button"] {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.new-entry-form form button[type="button"] {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.form-section:last-child {
+  border-bottom: none;
 }
 
 .nav-link{

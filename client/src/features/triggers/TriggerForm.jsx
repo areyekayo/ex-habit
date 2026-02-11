@@ -50,25 +50,28 @@ function TriggerForm({onSuccess}){
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add a Trigger</h3>
                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
-                <h4>Trigger Name</h4>
-                <input 
-                    type="text"
-                    name="name"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.name} />
+                <div className="form-section">
+                    <h4>Trigger Name</h4>
+                    <input 
+                        type="text"
+                        name="name"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.name} />
 
-                {formik.errors.name && <p style={{color: "red"}}>{formik.errors.name}</p>}
+                    {formik.errors.name && <p style={{color: "red"}}>{formik.errors.name}</p>}
+                </div>
+                <div className="form-section">
+                    <h4>Description</h4>
+                    <textarea 
+                        placeholder="Describe the trigger"
+                        name="description"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.description}
 
-                <h4>Description</h4>
-                <textarea 
-                    placeholder="Describe the trigger"
-                    name="description"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.description}
-
-                    />
+                        />
+                </div>
 
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit</button>
             </form>

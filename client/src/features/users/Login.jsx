@@ -26,7 +26,7 @@ function Login(){
                         Sign Up</button>
                 </div>
             ) : (
-                <div classname="list">
+                <div className="list">
                     <SignUpForm />
                     <p>Already have an account?</p>
                     <button onClick={() => setShowLogin(true)}>

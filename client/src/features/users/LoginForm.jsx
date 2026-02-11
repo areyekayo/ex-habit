@@ -45,32 +45,35 @@ function LoginForm() {
         <div className="new-entry-form">
             <h4>Log In</h4>
             <form onSubmit={formik.handleSubmit}>
-                <label htmlFor='username'>Username</label>
-                <input
-                    id="username"
-                    name="username"
-                    onChange={(e) => {
-                        setBackendErrors({});
-                        formik.handleChange(e);
-                    }}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.username}
-                />
-                {getError("username") && <p style={{color: "red"}}>{getError("username")}</p>}
-
-                <label htmlFor="password">Password</label>
-                <input 
-                    id="password"
-                    name="password"
-                    type="password"
-                    onChange={(e) => {
-                        setBackendErrors({});
-                        formik.handleChange(e);
-                    }}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password}
+                <div className="form-section">
+                    <label htmlFor='username'>Username</label>
+                    <input
+                        id="username"
+                        name="username"
+                        onChange={(e) => {
+                            setBackendErrors({});
+                            formik.handleChange(e);
+                        }}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.username}
                     />
-                {getError("password") && <p style={{color: "red"}}>{getError('password')}</p>}
+                    {getError("username") && <p style={{color: "red"}}>{getError("username")}</p>}
+                </div>
+                <div className="form-section">
+                    <label htmlFor="password">Password</label>
+                    <input 
+                        id="password"
+                        name="password"
+                        type="password"
+                        onChange={(e) => {
+                            setBackendErrors({});
+                            formik.handleChange(e);
+                        }}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                        />
+                    {getError("password") && <p style={{color: "red"}}>{getError('password')}</p>}
+                </div>
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Login</button>
             </form>
         </div>
