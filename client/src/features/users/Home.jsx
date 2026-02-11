@@ -5,13 +5,17 @@ import { useState } from "react";
 import TriggerForm from "../triggers/TriggerForm";
 import BehaviorCollection from "../behaviors/BehaviorCollection";
 import BehaviorForm from "../behaviors/BehaviorForm";
+import Modal from "../../components/Modal";
 
 function Home() {
     const user = useSelector((state) => state.user.user)
-    const [showEntryForm, setShowEntryForm] = useState(false);
-    const [showTriggerForm, setShowTriggerForm] = useState(false);
-    const [showBehaviorForm, setShowBehaviorForm] = useState(false);
+    const [modalContent, setModalContent] = useState(null)
 
+    const openTriggerForm = () => setModalContent("trigger");
+    const openBehaviorForm = () => setModalContent("behavior");
+    const closeModal = () => setModalContent(null);
+
+    const [showEntryForm, setShowEntryForm] = useState(false);
 
     if (!user) return <div>Loading user...</div>
 
@@ -22,21 +26,19 @@ function Home() {
             <div className="button-container">
                 <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
 
-                <button onClick={() => setShowTriggerForm(!showTriggerForm)}>Add Trigger</button>
+                <button onClick={openTriggerForm}>Add Trigger</button>
 
-                <button onClick={() => setShowBehaviorForm(!showBehaviorForm)}>Add Behavior</button>
-
+                <button onClick={openBehaviorForm}>Add Behavior</button>
             </div>
+            {modalContent && (
+                <Modal isOpen={true} onClose={closeModal}>
+                    {modalContent === "trigger" && <TriggerForm onSuccess={closeModal} />}
+                    {modalContent === "behavior" && <BehaviorForm onSuccess={closeModal} />}
+                </Modal>
+            )}
+
             {showEntryForm ? (
                 <EntryForm />
-                ) : (<></>)}
-
-            {showTriggerForm ? (
-                <TriggerForm />
-                ) : (<></>)}
-
-            {showBehaviorForm ? (
-                <BehaviorForm />
                 ) : (<></>)}
         
             <h3>Your Triggers</h3>

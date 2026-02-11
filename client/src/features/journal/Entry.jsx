@@ -81,9 +81,11 @@ function EntryCard(){
             <p>Result: {entry.result}</p>
             <p>Mood: {entry.mood}</p>
 
-            <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
+            <div className="button-container">
+                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
 
-            <button onClick={handleDelete}>Delete Entry</button>
+                <button onClick={handleDelete}>Delete</button>
+            </div>
 
             {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
             {showUpdateForm ? (

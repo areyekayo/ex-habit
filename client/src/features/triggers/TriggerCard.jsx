@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import NestedBehaviorCard from "../behaviors/NestedBehaviorCard";
 import { selectTriggerWithBehaviors } from "../../selectors";
@@ -74,7 +74,7 @@ function TriggerCard(){
             <div className="button-container">
                 <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
 
-                <button onClick={handleDelete}>Delete Trigger</button>
+                <button onClick={handleDelete}>Delete</button>
             </div>
 
             {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
