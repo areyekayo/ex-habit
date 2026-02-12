@@ -74,7 +74,7 @@ function EntryForm(){
                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
                 
                 <div className="form-section">
-                    <h4>Select A Trigger</h4>
+                    <h4>Trigger</h4>
                     <p>What was the trigger or cue for this habit loop? 
                     
                     Select an existing trigger or create a new one.</p>
@@ -92,7 +92,7 @@ function EntryForm(){
                 </div>
                 
                 <div className="form-section">
-                    <h4>Select a Behavior</h4>
+                    <h4>Behavior</h4>
                     <p>What was the behavior for this habit loop?</p>
                     <select name="behavior"
                         value={formik.values.behavior}
@@ -131,7 +131,7 @@ function EntryForm(){
                         value={formik.values.reward}
                     />
                 </div>
-                <div className="formSection">
+                <div className="form-section">
                     <h4>Result</h4>
                     <p>What was the result of this habit loop?</p>
                     <input 

@@ -24,7 +24,7 @@ function Home() {
             { user ? (<h1>Hi, {user.username}</h1>)
             : (null)}
             <div className="button-container">
-                <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
+                <button onClick={() => setShowEntryForm(!showEntryForm)}>{showEntryForm ? (<p>Hide Entry</p>) : (<p>Add Entry</p>)}</button>
 
                 <button onClick={openTriggerForm}>Add Trigger</button>
 

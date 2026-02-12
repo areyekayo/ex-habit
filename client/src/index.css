@@ -84,6 +84,7 @@ h3 {
   display: inline-block;
   vertical-align: middle;
   text-align: center;
+  font-family: 'Roboto Mono';
 }
 
 .new-entry-form form button[type="button"] {
@@ -140,6 +141,11 @@ h3 {
 
 }
 
+.button {
+  font-size: 12px;
+  font-family: 'Roboto Mono';
+}
+
 .button-container {
   display: grid;
   grid-auto-flow: column;
@@ -154,12 +160,15 @@ h3 {
   width: 100%;
   box-sizing: border-box;
   padding: 0.5rem 1rem;
+  font-family: 'Roboto Mono';
+  font-size: 12px;
 }
 
-.button {
-  font-size: 15px;
-  font-family: 'Roboto Mono';
+.button-container button p {
+  margin-top: 0rem;
+  margin-bottom: 0rem;
 }
+
 
 .close-modal-btn {
   margin: 10px;
