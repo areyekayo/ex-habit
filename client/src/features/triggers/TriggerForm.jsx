@@ -12,7 +12,6 @@ function TriggerForm({onSuccess}){
     const formSchema = yup.object().shape({
         name: yup.string().required("Enter a name").min(5, "Name must be at least 5 characters").max(100, "Name must be less than 100 characters"),
         description: yup.string()
-
     })
 
     const formik = useFormik({
@@ -49,7 +48,7 @@ function TriggerForm({onSuccess}){
         <div className="new-entry-form">
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add a Trigger</h3>
-                {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
+                <p>Triggers are the cues that prompt a certain behavior or habit. Triggers can be situational, emotional, or mental. Any trigger you add is private to you, so other users can't see your triggers.</p>
                 <div className="form-section">
                     <h4>Trigger Name</h4>
                     <input 
@@ -72,6 +71,8 @@ function TriggerForm({onSuccess}){
 
                         />
                 </div>
+
+                {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
 
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit</button>
             </form>

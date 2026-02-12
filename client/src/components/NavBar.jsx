@@ -2,7 +2,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { logout } from "../features/users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-
 function NavBar() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -23,7 +22,7 @@ function NavBar() {
         <nav>
             <NavLink className="nav-link" to="/home">Home</NavLink>
             {isAuthenticated ? (
-                <button onClick={handleLogout}>Logout</button>
+                <button className="nav-link" onClick={handleLogout}>Logout</button>
             )
                 : (<NavLink className="nav-link" to="/login">Login</NavLink>)
             }

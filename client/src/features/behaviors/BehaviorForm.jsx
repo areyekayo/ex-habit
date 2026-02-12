@@ -52,6 +52,7 @@ function BehaviorForm({onSuccess}) {
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add A Behavior</h3>
                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
+                <p>Any behavior you add will be available for all users, so do not add any personal information!</p>
                 <div className="form-section">
                     <h4>Select Behavior Type</h4>
                     <select

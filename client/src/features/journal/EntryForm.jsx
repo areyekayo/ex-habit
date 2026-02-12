@@ -3,18 +3,16 @@ import * as yup from "yup";
 import {useFormik} from "formik";
 import { addEntry, selectAllTriggers } from "../users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBehaviors } from "../behaviors/behaviorSlice";
+import { fetchBehaviors, selectAllBehaviors } from "../behaviors/behaviorSlice";
 import Modal from "../../components/Modal";
 import TriggerForm from "../triggers/TriggerForm";
 import BehaviorForm from "../behaviors/BehaviorForm";
-import { selectAllBehaviors } from "../behaviors/behaviorSlice";
 
 function EntryForm(){
     const dispatch = useDispatch();
     const [successMessage, setSuccessMessage] = useState("");
     const triggers = useSelector(selectAllTriggers);
     const behaviors = useSelector(selectAllBehaviors);
-    const behaviorsStatus = useSelector((state) => state.behaviors.status )
     const [showTriggerModal, setShowTriggerModal] = useState(false);
     const [showBehaviorModal, setShowBehaviorModal] = useState(false);
 
@@ -31,12 +29,9 @@ function EntryForm(){
         closeBehaviorModal();
     }
 
-
-    useEffect(() => {
-        if (behaviorsStatus === 'idle') {
-            dispatch(fetchBehaviors());
-        }}, [behaviorsStatus, dispatch]);
-
+    useEffect(() => { // refresh behaviors in case other users have added new behaviors
+        dispatch(fetchBehaviors());
+        }, [dispatch]);
 
     const formSchema = yup.object().shape({
         trigger: yup.string().required("Trigger is required"),
@@ -72,7 +67,6 @@ function EntryForm(){
         <div className="new-entry-form">
             <form onSubmit={formik.handleSubmit}>
                 <h3>Write An Entry</h3>
-                {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
                 
                 <div className="form-section">
                     <h4>Trigger</h4>
@@ -158,10 +152,11 @@ function EntryForm(){
                     <option value="Okay">Okay</option>
                     <option value="Good">Good</option>
                     <option value="Great">Great</option>
-
-                    </select>
+                </select>
                 {formik.errors.mood && <p style={{color: "red"}}>{formik.errors.mood}</p>}
                 </div>
+
+                {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
 
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit Entry</button>
 
