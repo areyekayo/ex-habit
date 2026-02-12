@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch } from "react-redux";
 import { createTrigger } from "../users/userSlice";
 
 function TriggerForm({onSuccess}){

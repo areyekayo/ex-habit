@@ -1,18 +1,19 @@
 import {useState, useEffect} from "react";
 import * as yup from "yup";
 import {useFormik} from "formik";
-import { addEntry } from "../users/userSlice";
+import { addEntry, selectAllTriggers } from "../users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBehaviors } from "../behaviors/behaviorSlice";
 import Modal from "../../components/Modal";
 import TriggerForm from "../triggers/TriggerForm";
 import BehaviorForm from "../behaviors/BehaviorForm";
+import { selectAllBehaviors } from "../behaviors/behaviorSlice";
 
 function EntryForm(){
     const dispatch = useDispatch();
     const [successMessage, setSuccessMessage] = useState("");
-    const triggers = useSelector(state => Object.values(state.user.triggers.entities));
-    const behaviors = useSelector((state) => Object.values(state.behaviors.entities));
+    const triggers = useSelector(selectAllTriggers);
+    const behaviors = useSelector(selectAllBehaviors);
     const behaviorsStatus = useSelector((state) => state.behaviors.status )
     const [showTriggerModal, setShowTriggerModal] = useState(false);
     const [showBehaviorModal, setShowBehaviorModal] = useState(false);
