@@ -26,6 +26,7 @@ h1,
 h2,
 h3,
 h4,
+h5,
 p {
   text-align: center;
   margin: 12px auto;
@@ -90,7 +91,7 @@ p {
 }
 
 .new-entry-form form select,
-.new-entry-form form button[type="button"] {
+.new-entry-form form button {
   display: inline-block;
   vertical-align: middle;
   text-align: center;
@@ -123,7 +124,7 @@ p {
   background: rgb(119, 119, 119);
   text-decoration: none;
   text-align: center;
-  font-size: 20px ;
+  font-size: 15px ;
   color: white;
   font-family: "Roboto Mono";
 }

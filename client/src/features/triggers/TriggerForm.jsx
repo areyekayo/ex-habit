@@ -48,7 +48,9 @@ function TriggerForm({onSuccess}){
         <div className="new-entry-form">
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add a Trigger</h3>
-                <p>Triggers are the cues that prompt a certain behavior or habit. Triggers can be situational, emotional, or mental. Some examples are anxiety, work, social events, stress, etc. Any trigger you add is private to you, so other users can't see your triggers.</p>
+                <p>Triggers are the cues that prompt a certain behavior or habit. Triggers can be situational, emotional, or mental. Some examples are anxiety, work, social events, stress, etc.</p>
+                
+                <p>Any trigger you add is private to you, so other users can't see your triggers.</p>
                 <div className="form-section">
                     <h4>Trigger Name</h4>
                     <input 

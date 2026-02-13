@@ -13,19 +13,24 @@ function TriggerCollection() {
     if (status === 'failed'){
         return <div>Error: {error}</div>
     }
-    if (!user || !user.triggerIds?.length) return <p>You don't have any triggers yet.</p>
+    if (!user || !user.triggerIds?.length) return (
+        <div>
+            <h2>Your Triggers</h2>
+            <p>You don't have any triggers yet. Add one above.</p>
+        </div>
+    )
 
     return (
         <>
             <section className="list">
-                <h3>Your Triggers</h3>
+                <h2>Your Triggers</h2>
                 {user.triggerIds.map(triggerId => {
                     const trigger = triggers.find(t => t.id === triggerId);
                     if (!trigger) return null;
                     return (
-                        <h4 key={trigger.id}>
+                        <h3 key={trigger.id}>
                             <Link to={`/triggers/${trigger.id}`}>{trigger.name}</Link>
-                        </h4>
+                        </h3>
                     )
                 })}
             </section>

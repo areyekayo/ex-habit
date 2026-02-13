@@ -27,6 +27,7 @@ function BehaviorCollection() {
     if (behaviorsForUser.length === 0){
         return (
             <div>
+                <h2>Your Behaviors</h2>
                 <p>You don't have any behaviors yet. Add an entry using a behavior.</p>
             </div>)
     }
@@ -34,11 +35,11 @@ function BehaviorCollection() {
     return (
         <>
             <section className="list">
-                <h3>Your Behaviors</h3>
+                <h2>Your Behaviors</h2>
                 {behaviorsForUser.map(behavior => (
-                    <h4 key={behavior.id}>
+                    <h3 key={behavior.id}>
                         <Link to={`/behaviors/${behavior.id}`} key={behavior.id}>{behavior.name}</Link>
-                    </h4>
+                    </h3>
                 ))}
             </section>
         </>

@@ -14,17 +14,19 @@ function NestedBehaviorCard({behavior, triggerId}){
     return (
         <>
             <div className="card">
-                <h3>{name}</h3>
+                <h4 key={id}>
+                    <Link to={`/behaviors/${id}`}>{name}</Link>
+                </h4>
                 <p>Type: {type}</p>
                 <p>{description}</p>
-                <h3>Entries</h3>
+                <h5>Habit Loop Entries</h5>
                 {behaviorWithEntries.entries.length > 0 ? (
                     behaviorWithEntries.entries.map(entry => (
-                    <h4 key={entry.id}>
+                    <h5 key={entry.id}>
                         <Link to={`/entries/${entry.id}`}>
                             {entry.created_timestamp}
                         </Link>
-                    </h4>
+                    </h5>
                 ))
                 ) : (
                     <p>No entries</p>

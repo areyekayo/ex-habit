@@ -24,11 +24,16 @@ function Home() {
             { user ? (<h1>Hi, {user.username}</h1>)
             : (null)}
             <div className="button-container">
-                <button onClick={() => setShowEntryForm(!showEntryForm)}>{showEntryForm ? (<p>Hide Entry</p>) : (<p>Add Entry</p>)}</button>
+                {showEntryForm ? (
+                    <button onClick={() => setShowEntryForm(!showEntryForm)}>Hide Entry Form</button>
+                ) : (
+                    <>
+                        <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
+                        <button onClick={openTriggerForm}>Add Trigger</button>
+                        <button onClick={openBehaviorForm}>Add Behavior</button>
+                    </>
+                )}
 
-                <button onClick={openTriggerForm}>Add Trigger</button>
-
-                <button onClick={openBehaviorForm}>Add Behavior</button>
             </div>
             {modalContent && (
                 <Modal isOpen={true} onClose={closeModal}>

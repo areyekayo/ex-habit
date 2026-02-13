@@ -13,9 +13,11 @@ function NestedTriggerCard({trigger, behaviorId}){
     return (
         <>
             <div className="card">
-                <h4>{trigger.name}</h4>
+                <h4 key={trigger.id}>
+                    <Link to={`/triggers/${trigger.id}`}>{trigger.name}</Link>
+                </h4>
                 <p>{trigger.description}</p>
-                <h4>Entries</h4>
+                <h5>Habit Loop Entries</h5>
                 {triggerWithEntries.entries.length > 0 ? (
                     triggerWithEntries.entries.map(entry => (
                         <h4 key={entry.id}>

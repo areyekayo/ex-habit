@@ -4,7 +4,7 @@ function Modal({isOpen, onClose, children}) {
         <>
             {isOpen && (
                 <div className="right-modal">
-                    <button onClick={onClose} className="close-modal-btn">Close</button>
+                    <button onClick={onClose} className="close-modal-btn">X</button>
                     {children}
                 </div>
             )}

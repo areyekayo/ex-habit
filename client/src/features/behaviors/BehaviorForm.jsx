@@ -52,7 +52,7 @@ function BehaviorForm({onSuccess}) {
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add A Behavior</h3>
         
-                <p>Behaviors are the habits that you wish to stop doing.</p>
+                <p>Behaviors are the types of habits that you wish to stop doing. Behaviors can be social, emotional, mental, or physical.</p>
                 
                 <p>All behaviors will be available to other users, so do not add any personal information!</p>
                 <div className="form-section">
@@ -67,6 +67,7 @@ function BehaviorForm({onSuccess}) {
                         <option value="Finance">Finance</option>
                         <option value="Health">Health</option>
                         <option value="Productivity">Productivity</option>
+                        <option value="Social">Social</option>
 
                     </select>
                 {formik.errors.type && <p style={{color: "red"}}>{formik.errors.type}</p>}

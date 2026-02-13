@@ -88,7 +88,9 @@ function EntryForm(){
                 
                 <div className="form-section">
                     <h4>Behavior</h4>
-                    <p>What was the behavior for this habit loop?</p>
+                    <p>What was the behavior for this habit loop?
+                        Select an existing behavior or create a new one.
+                    </p>
                     <select name="behavior"
                         value={formik.values.behavior}
                         onChange={formik.handleChange}
@@ -105,7 +107,7 @@ function EntryForm(){
                 </div>
                 <div className="form-section">
                     <h4>Description</h4>
-                    <p>Describe what happened when you engaged in this habit loop</p>
+                    <p>Describe what happened. What does this habit feel like in your body?</p>
                     <textarea 
                         placeholder="Describe what happened when you engaged in this habit loop"
                         name="description"
@@ -117,7 +119,7 @@ function EntryForm(){
                 </div>
                 <div className="form-section">
                     <h4>Reward</h4>
-                    <p>What was rewarding about this habit loop?</p>
+                    <p>What did you get out of this habit loop?</p>
                     <input
                         type="text"
                         name="reward"
