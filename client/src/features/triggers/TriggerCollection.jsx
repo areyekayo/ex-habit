@@ -29,7 +29,7 @@ function TriggerCollection() {
                     if (!trigger) return null;
                     return (
                         <h3 key={trigger.id}>
-                            <Link to={`/triggers/${trigger.id}`}>{trigger.name}</Link>
+                            <Link to={`/triggers/${trigger.id}`} key={trigger.id}>{trigger.name}</Link>
                         </h3>
                     )
                 })}

@@ -19,7 +19,7 @@ function BehaviorCard(){
         <div>
             <h2>{behavior.name}</h2>
             <p>{behavior.description}</p>
-            <div className="card-collection">
+            <div className="collection">
                 <h3>Related Triggers</h3>
                 {triggers.length === 0 && <p>No triggers associated with this behavior</p>}
                 {triggers.map((trigger) => (

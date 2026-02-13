@@ -101,10 +101,10 @@ function TriggerCard(){
                         <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit</button>
                     </form>
                 </div>
-            ) : (<></>)
+            ) : (null)
             }
 
-            <div className="card-collection">
+            <div className="collection">
             <h2>Related Habits</h2>
             {trigger.behaviors.length > 0 ? (
                 trigger.behaviors.map((behavior) => (

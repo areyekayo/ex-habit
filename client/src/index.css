@@ -32,16 +32,18 @@ p {
   margin: 12px auto;
 }
 
-.card-collection {
+.collection {
+  background-color: #d4d4d4;
+  border-radius:  8px;
+  padding: 16px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+  margin: 20px auto;
+  max-width: 400px;
+  text-align: center;
   align-items: center;
   justify-content: center;
-  display: grid;
-  background-color: #d4d4d4;
-  max-width: 400px;
-  border-radius: 8px;
-  padding: 16px;
-  margin: 20px auto;
 }
+
 .card {
   text-align: center;
   align-items: center;
@@ -129,24 +131,13 @@ p {
   font-family: "Roboto Mono";
 }
 
-.collection {
-  background-color: #e7e6e6;
-  border-radius:  8px;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgbha(0, 0, 0, 0.1);
-  margin: 20px auto;
-  max-width: 400px;
-  text-align: center;
-  font-family: 'Roboto';
-}
-
 .right-modal {
   position: fixed;
   top: 0;
   right: 0;
   height: 100%;
   width: 400px;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+  box-shadow: -7px 0 5px rgba(0,0,0,0.3);
   background-color: white;
   z-index: 1000;
   overflow-y: auto;
