@@ -51,8 +51,10 @@ function BehaviorForm({onSuccess}) {
         <div className="new-entry-form">
             <form onSubmit={formik.handleSubmit}>
                 <h3>Add A Behavior</h3>
-                {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
-                <p>Any behavior you add will be available for all users, so do not add any personal information!</p>
+        
+                <p>Behaviors are the habits that you wish to stop doing.</p>
+                
+                <p>All behaviors will be available to other users, so do not add any personal information!</p>
                 <div className="form-section">
                     <h4>Select Behavior Type</h4>
                     <select
@@ -76,8 +78,8 @@ function BehaviorForm({onSuccess}) {
                         name="name"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={formik.values.title} />
-                    {formik.errors.name && <p style={{color: "red"}}>{formik.errors.title}</p>}
+                        value={formik.values.name} />
+                    {formik.errors.name && <p style={{color: "red"}}>{formik.errors.name}</p>}
                 </div>
                 <div className="form-section">
                     <h4>Description</h4>
@@ -90,6 +92,8 @@ function BehaviorForm({onSuccess}) {
                     />
                     {formik.errors.description && <p style={{color: "red"}}>{formik.errors.description}</p>}
                 </div>
+
+                {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
 
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Add Behavior</button>
             </form>

@@ -116,7 +116,9 @@ function normalizeUserResponse(userApiResponse) {
             if (!user.behaviorIds.includes(behavior.id)){
                 user.behaviorIds.push(behavior.id)
             }
-            behaviorIdsForTrigger.push(behavior.id);
+            if (!behaviorIdsForTrigger.includes(behavior.id)){
+                behaviorIdsForTrigger.push(behavior.id);
+            }
 
             const entryIdsForBehavior = [];
             (behavior.entries || []).forEach(entry => {

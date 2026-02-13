@@ -4,7 +4,7 @@ import { selectAllTriggers } from "../users/userSlice";
 
 function TriggerCollection() {
     const {user, status, error} = useSelector(state => state.user);
-    const triggers = useSelector(state => state.user.triggers.entities)
+    const triggers = useSelector(selectAllTriggers)
 
     if (status === 'loading'){
         return <div>Loading triggers...</div>
@@ -20,7 +20,7 @@ function TriggerCollection() {
             <section className="list">
                 <h3>Your Triggers</h3>
                 {user.triggerIds.map(triggerId => {
-                    const trigger = triggers[triggerId];
+                    const trigger = triggers.find(t => t.id === triggerId);
                     if (!trigger) return null;
                     return (
                         <h4 key={trigger.id}>

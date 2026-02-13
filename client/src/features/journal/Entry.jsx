@@ -78,6 +78,7 @@ function EntryCard(){
 
     return (
         <div className="card-collection">
+        <h3>Habit Loop Entry</h3>
         <div className="card">
             <h4>{entry.created_timestamp}</h4>
             <p>Trigger: {trigger.name}</p>
