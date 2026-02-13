@@ -150,7 +150,8 @@ p {
   background-color: white;
   z-index: 1000;
   overflow-y: auto;
-
+  display: flex;
+  flex-direction: column;
 }
 
 .button {
@@ -181,8 +182,8 @@ p {
   margin-bottom: 0rem;
 }
 
-
 .close-modal-btn {
+  align-self: flex-start;
   margin: 10px;
   font-family: 'Roboto Mono';
 }
