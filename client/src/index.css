@@ -44,6 +44,11 @@ p {
   justify-content: center;
 }
 
+a {
+  color:#17729f;
+}
+
+
 .card {
   text-align: center;
   align-items: center;
@@ -148,6 +153,16 @@ p {
 button {
   font-size: 12px;
   font-family: 'Roboto Mono';
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #61dafb
+}
+
+button:disabled {
+  background-color:#ccc;
+  cursor: not-allowed;
 }
 
 .button-container {
