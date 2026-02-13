@@ -22,7 +22,7 @@ function TriggerCollection() {
 
     return (
         <>
-            <section className="list">
+            <section className="collection">
                 <h2>Your Triggers</h2>
                 {user.triggerIds.map(triggerId => {
                     const trigger = triggers.find(t => t.id === triggerId);

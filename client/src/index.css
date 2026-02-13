@@ -129,7 +129,7 @@ p {
   font-family: "Roboto Mono";
 }
 
-.list {
+.collection {
   background-color: #e7e6e6;
   border-radius:  8px;
   padding: 16px;
@@ -154,7 +154,7 @@ p {
   flex-direction: column;
 }
 
-.button {
+button {
   font-size: 12px;
   font-family: 'Roboto Mono';
 }

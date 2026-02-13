@@ -28,7 +28,6 @@ function BehaviorCard(){
             </div>
         </div>
     )
-    
 }
 
 export default BehaviorCard;

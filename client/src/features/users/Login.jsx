@@ -19,14 +19,14 @@ function Login(){
     return (
         <div>
             {showLogin ? (
-                <div className="list">
+                <div className="collection">
                     <LoginForm />
                     <p>Don't have an account?</p>
                     <button onClick={() => setShowLogin(false)}>
                         Sign Up</button>
                 </div>
             ) : (
-                <div className="list">
+                <div className="collection">
                     <SignUpForm />
                     <p>Already have an account?</p>
                     <button onClick={() => setShowLogin(true)}>
