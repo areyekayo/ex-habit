@@ -34,6 +34,7 @@ function BehaviorCollection() {
     return (
         <>
             <section className="list">
+                <h3>Your Behaviors</h3>
                 {behaviorsForUser.map(behavior => (
                     <h4 key={behavior.id}>
                         <Link to={`/behaviors/${behavior.id}`} key={behavior.id}>{behavior.name}</Link>

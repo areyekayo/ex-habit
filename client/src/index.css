@@ -25,20 +25,29 @@ body {
 h1,
 h2,
 h3,
+h4,
 p {
   text-align: center;
+  margin: 12px auto;
 }
 
 .card-collection {
   align-items: center;
   justify-content: center;
   display: grid;
+  background-color: #d4d4d4;
+  max-width: 400px;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px auto;
 }
 .card {
   text-align: center;
+  align-items: center;
   border: grey solid 1px;
+  background-color: #fafafa;
   padding: 1rem;
-  width: 400px;
+  width: 300px;
   max-height: fit-content;
   display: inline-grid;
   margin: 20px auto;

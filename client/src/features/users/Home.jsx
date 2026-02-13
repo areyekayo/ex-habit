@@ -40,12 +40,10 @@ function Home() {
             {showEntryForm ? (
                 <EntryForm />
                 ) : (<></>)}
-        
-            <h3>Your Triggers</h3>
-            <TriggerCollection />
 
-            <h3>Your Behaviors</h3>
             <BehaviorCollection />
+        
+            <TriggerCollection />
         </>
     )
 }

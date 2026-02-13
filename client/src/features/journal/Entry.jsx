@@ -3,13 +3,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { updateEntry, deleteEntry } from "../users/userSlice";
+import { updateEntry, deleteEntry, selectEntryById, selectTriggerById } from "../users/userSlice";
+import { selectBehaviorById } from "../behaviors/behaviorSlice";
 
 function EntryCard(){
     const {id} = useParams();
     const entryId = parseInt(id, 10);
     const user = useSelector(state => state.user.user);
-    const entry = useSelector(state => state.user.entries.entities[entryId])
+    const entry = useSelector(state => selectEntryById(state, entryId))
+    const trigger = useSelector(state => entry ? selectTriggerById(state, entry.trigger_id) : null)
+    const behavior = useSelector(state => entry ? selectBehaviorById(state, entry.behavior_id) : null)
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const dispatch = useDispatch();
@@ -74,12 +77,15 @@ function EntryCard(){
     if (!entry) return <div>Entry not found</div>
 
     return (
+        <div className="card-collection">
         <div className="card">
             <h4>{entry.created_timestamp}</h4>
-            <p>{entry.description}</p>
+            <p>Trigger: {trigger.name}</p>
+            <p>Behavior: {behavior.name}</p>
             <p>Reward: {entry.reward}</p>
             <p>Result: {entry.result}</p>
             <p>Mood: {entry.mood}</p>
+            <p>{entry.description}</p>
 
             <div className="button-container">
                 <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
@@ -145,6 +151,7 @@ function EntryCard(){
                     </form>
                 </div>
             ) : (<></>)}
+        </div>
         </div>
     )
     

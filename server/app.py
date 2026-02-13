@@ -269,6 +269,8 @@ class Entries(Resource):
         trigger_id = data.get('trigger')
         trigger = Trigger.query.get(trigger_id)
         if not trigger: return {'error': 'Trigger not found'}, 404
+        if current_user.id != trigger.user_id: return {'error': 'Unauthorized'}, 401
+        
         behavior_id = data.get('behavior')
         behavior = Behavior.query.get(behavior_id)
         if not behavior: return {'error': 'Behavior not found'}, 404

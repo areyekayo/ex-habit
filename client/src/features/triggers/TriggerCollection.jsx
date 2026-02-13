@@ -18,6 +18,7 @@ function TriggerCollection() {
     return (
         <>
             <section className="list">
+                <h3>Your Triggers</h3>
                 {user.triggerIds.map(triggerId => {
                     const trigger = triggers[triggerId];
                     if (!trigger) return null;

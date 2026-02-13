@@ -104,8 +104,8 @@ function TriggerCard(){
             ) : (<></>)
             }
 
-            <h3>Related Habits</h3>
             <div className="card-collection">
+            <h3>Related Habits</h3>
             {trigger.behaviors.length > 0 ? (
                 trigger.behaviors.map((behavior) => (
                     <NestedBehaviorCard key={behavior.id} behavior={behavior} triggerId={trigger.id}/>
