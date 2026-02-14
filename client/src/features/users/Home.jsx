@@ -4,7 +4,6 @@ import EntryForm from "../journal/EntryForm";
 import { useState } from "react";
 import TriggerForm from "../triggers/TriggerForm";
 import BehaviorCollection from "../behaviors/BehaviorCollection";
-import BehaviorForm from "../behaviors/BehaviorForm";
 import Modal from "../../components/Modal";
 import { selectUser } from "./userSlice";
 
@@ -13,7 +12,6 @@ function Home() {
     const [modalContent, setModalContent] = useState(null)
 
     const openTriggerForm = () => setModalContent("trigger");
-    const openBehaviorForm = () => setModalContent("behavior");
     const closeModal = () => setModalContent(null);
 
     const [showEntryForm, setShowEntryForm] = useState(false);
@@ -31,7 +29,6 @@ function Home() {
                     <>
                         <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
                         <button onClick={openTriggerForm}>Add Trigger</button>
-                        <button onClick={openBehaviorForm}>Add Behavior</button>
                     </>
                 )}
 
@@ -39,7 +36,7 @@ function Home() {
             {modalContent && (
                 <Modal isOpen={true} onClose={closeModal}>
                     {modalContent === "trigger" && <TriggerForm onSuccess={closeModal} />}
-                    {modalContent === "behavior" && <BehaviorForm onSuccess={closeModal} />}
+
                 </Modal>
             )}
 

@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { updateTrigger, deleteTrigger } from "../users/userSlice";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import EntryForm from "../journal/EntryForm";
 
 function TriggerCard(){
     const {id} = useParams();
@@ -17,6 +18,7 @@ function TriggerCard(){
     const dispatch = useDispatch();
     const [isDeleted, setIsDeleted] = useState(false);
     const navigate = useNavigate()
+    const [showEntryForm, setShowEntryForm] = useState(false);
 
     const handleDelete = async () => {
         try {
@@ -71,9 +73,17 @@ function TriggerCard(){
             <h2>{trigger.name}</h2>
             <p>{trigger.description}</p>
             <div className="button-container">
-                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
+                {showEntryForm ? (
+                    <button onClick={() => setShowEntryForm(!showEntryForm)}>Hide Entry Form</button>
+                ) : (
+                    <>
+                        <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
 
-                <button onClick={handleDelete}>Delete</button>
+                        <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit Trigger</button>
+
+                        <button onClick={handleDelete}>Delete Trigger</button>
+                    </>
+                )}
             </div>
 
             {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
@@ -103,6 +113,10 @@ function TriggerCard(){
             ) : (null)
             }
 
+             {showEntryForm ? (
+                <EntryForm initialTriggerId={triggerId} />
+                ) : (null)}
+
             <div className="collection">
                 <h2>Related Habits</h2>
                 {trigger.behaviors.length > 0 ? (
@@ -110,7 +124,9 @@ function TriggerCard(){
                         <NestedBehaviorCard key={behavior.id} behavior={behavior} triggerId={trigger.id}/>
                     ))
                 ) : (
-                    <p>No habits</p>
+                    <>
+                        <p>No habits</p>
+                    </>
                     )
                 }
             </div>

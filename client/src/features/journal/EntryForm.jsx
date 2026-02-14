@@ -8,14 +8,13 @@ import Modal from "../../components/Modal";
 import TriggerForm from "../triggers/TriggerForm";
 import BehaviorForm from "../behaviors/BehaviorForm";
 
-function EntryForm({initialTriggerId = "", initialBehaviorId = "", onSuccess}){
+function EntryForm({initialTriggerId = "", initialBehaviorId = ""}){
     const dispatch = useDispatch();
     const [successMessage, setSuccessMessage] = useState("");
     const triggers = useSelector(selectAllTriggers);
     const behaviors = useSelector(selectAllBehaviors);
     const [showTriggerModal, setShowTriggerModal] = useState(false);
     const [showBehaviorModal, setShowBehaviorModal] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const openTriggerModal = () => setShowTriggerModal(true);
     const closeTriggerModal = () => setShowTriggerModal(false);
@@ -58,7 +57,6 @@ function EntryForm({initialTriggerId = "", initialBehaviorId = "", onSuccess}){
             try {
                 await dispatch(addEntry(values)).unwrap();
                 setSuccessMessage("Entry added successfully");
-                setIsSubmitted(true)
                 resetForm();
             }
             catch (error) {console.error("Form submission failed", error)}
@@ -73,18 +71,6 @@ function EntryForm({initialTriggerId = "", initialBehaviorId = "", onSuccess}){
             formik.setFieldValue("behavior", initialBehaviorId);
         }
     }, [initialTriggerId, initialBehaviorId])
-
-    useEffect(() => { // close the modal after successful submit if opened as modal in NestedTriggerCard or NestedBehaviorCard
-        if (isSubmitted){
-            const timer = setTimeout(() => {
-                if (onSuccess) onSuccess();
-                setSuccessMessage("");
-                setIsSubmitted(false);
-            }, 3000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [isSubmitted, onSuccess])
 
     return (
         <div className="new-entry-form">
