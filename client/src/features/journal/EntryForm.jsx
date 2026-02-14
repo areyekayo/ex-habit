@@ -8,13 +8,14 @@ import Modal from "../../components/Modal";
 import TriggerForm from "../triggers/TriggerForm";
 import BehaviorForm from "../behaviors/BehaviorForm";
 
-function EntryForm(){
+function EntryForm({initialTriggerId = "", initialBehaviorId = "", onSuccess}){
     const dispatch = useDispatch();
     const [successMessage, setSuccessMessage] = useState("");
     const triggers = useSelector(selectAllTriggers);
     const behaviors = useSelector(selectAllBehaviors);
     const [showTriggerModal, setShowTriggerModal] = useState(false);
     const [showBehaviorModal, setShowBehaviorModal] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const openTriggerModal = () => setShowTriggerModal(true);
     const closeTriggerModal = () => setShowTriggerModal(false);
@@ -48,8 +49,8 @@ function EntryForm(){
             mood: "",
             reward: "",
             result: "",
-            trigger: "",
-            behavior: ""
+            trigger: initialTriggerId,
+            behavior: initialBehaviorId
         },
         validationSchema: formSchema,
         validateOnChange: true,
@@ -57,11 +58,33 @@ function EntryForm(){
             try {
                 await dispatch(addEntry(values)).unwrap();
                 setSuccessMessage("Entry added successfully");
+                setIsSubmitted(true)
                 resetForm();
             }
             catch (error) {console.error("Form submission failed", error)}
         }
     });
+
+    useEffect(() => {
+        if (initialTriggerId) {
+            formik.setFieldValue("trigger", initialTriggerId);
+        }
+        if (initialBehaviorId) {
+            formik.setFieldValue("behavior", initialBehaviorId);
+        }
+    }, [initialTriggerId, initialBehaviorId])
+
+    useEffect(() => { // close the modal after successful submit if opened as modal in NestedTriggerCard or NestedBehaviorCard
+        if (isSubmitted){
+            const timer = setTimeout(() => {
+                if (onSuccess) onSuccess();
+                setSuccessMessage("");
+                setIsSubmitted(false);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isSubmitted, onSuccess])
 
     return (
         <div className="new-entry-form">
@@ -70,9 +93,10 @@ function EntryForm(){
                 
                 <div className="form-section">
                     <h4>Trigger</h4>
-                    <p>What was the trigger or cue for this habit loop? 
+                    <p>What was the trigger or cue for this habit loop?</p>
                     
-                    Select an existing trigger or create a new one.</p>
+                    {initialTriggerId ? (<p>Select an existing trigger</p>) :
+                    (<p>Select an existing trigger or create a new one.</p>)}
                     <select name="trigger" 
                         value={formik.values.trigger}
                         onChange={formik.handleChange}
@@ -82,15 +106,16 @@ function EntryForm(){
                                 <option value={trigger.id} key={trigger.id}>{trigger.name}</option>
                             ))}
                         </select>
-                        <button type="button" onClick={openTriggerModal}>Add New Trigger</button>
+                        {initialTriggerId ? 
+                            (null) : (<button type="button" onClick={openTriggerModal}>Add New Trigger</button>)}
                         {formik.errors.trigger && <p style={{color: "red"}}>{formik.errors.trigger}</p>}
                 </div>
                 
                 <div className="form-section">
                     <h4>Behavior</h4>
-                    <p>What was the behavior for this habit loop?
-                        Select an existing behavior or create a new one.
-                    </p>
+                    <p>What was the behavior for this habit loop?</p>
+                    {initialBehaviorId ? (<p>Select an existing behavior</p>) :
+                    (<p>Select an existing behavior or create a new one.</p>)}
                     <select name="behavior"
                         value={formik.values.behavior}
                         onChange={formik.handleChange}
@@ -102,7 +127,10 @@ function EntryForm(){
                             ))}
 
                         </select>
-                        <button type="button" onClick={openBehaviorModal}>Add New Behavior</button>
+                        {initialBehaviorId ? 
+                            (null) : (<button type="button" onClick={openBehaviorModal}>Add New Behavior</button>)
+                            }
+                        
                         {formik.errors.behavior && <p style={{color: "red"}}>{formik.errors.behavior}</p>}
                 </div>
                 <div className="form-section">

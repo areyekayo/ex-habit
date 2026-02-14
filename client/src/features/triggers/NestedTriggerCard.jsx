@@ -1,12 +1,18 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectBehaviorWithEntriesByTrigger } from "../../selectors";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import EntryForm from "../journal/EntryForm";
+import Modal from "../../components/Modal";
 
 function NestedTriggerCard({trigger, behaviorId}){
-    const selectTriggerWithEntries = useMemo(() => selectBehaviorWithEntriesByTrigger(behaviorId, trigger.id), [behaviorId, trigger.id])
+    const selectTriggerWithEntries = useMemo(() => selectBehaviorWithEntriesByTrigger(behaviorId, trigger.id), [behaviorId, trigger.id]);
 
-    const triggerWithEntries = useSelector(selectTriggerWithEntries)
+    const triggerWithEntries = useSelector(selectTriggerWithEntries);
+
+    const [entryFormOpen, setEntryFormOpen] = useState(false);
+    const closeModal = () => setEntryFormOpen(false);
+
 
     if (!trigger) return <div>Trigger not found</div>
 
@@ -29,7 +35,13 @@ function NestedTriggerCard({trigger, behaviorId}){
                 ) : (
                     <p>No entries</p>
                 ) }
+                <button onClick={() => setEntryFormOpen(!entryFormOpen)}>Add Entry</button>
             </div>
+            {entryFormOpen && (
+                <Modal isOpen={true} onClose={closeModal}>
+                    <EntryForm initialTriggerId={trigger.id} initialBehaviorId={behaviorId} onSuccess={closeModal}/>
+                </Modal>
+            )}
         </>
     )
 }
