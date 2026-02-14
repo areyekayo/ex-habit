@@ -2,9 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import NestedBehaviorCard from "../behaviors/NestedBehaviorCard";
 import { selectTriggerWithBehaviors } from "../../selectors";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { updateTrigger, deleteTrigger } from "../users/userSlice";
-import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
@@ -105,15 +104,15 @@ function TriggerCard(){
             }
 
             <div className="collection">
-            <h2>Related Habits</h2>
-            {trigger.behaviors.length > 0 ? (
-                trigger.behaviors.map((behavior) => (
-                    <NestedBehaviorCard key={behavior.id} behavior={behavior} triggerId={trigger.id}/>
-                ))
-            ) : (
-                <p>No entries</p>
-            )
-        }
+                <h2>Related Habits</h2>
+                {trigger.behaviors.length > 0 ? (
+                    trigger.behaviors.map((behavior) => (
+                        <NestedBehaviorCard key={behavior.id} behavior={behavior} triggerId={trigger.id}/>
+                    ))
+                ) : (
+                    <p>No habits</p>
+                    )
+                }
             </div>
         </div>
     )

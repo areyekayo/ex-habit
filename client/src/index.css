@@ -48,7 +48,6 @@ a {
   color:#17729f;
 }
 
-
 .card {
   text-align: center;
   align-items: center;
@@ -87,13 +86,10 @@ a {
 
 .new-entry-form form h3,
 .new-entry-form form h4,
-.new-entry-form form p {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
+.new-entry-form form p,
 .new-entry-form form input,
 .new-entry-form form textarea {
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
@@ -190,6 +186,6 @@ button:disabled {
 
 .close-modal-btn {
   align-self: flex-start;
-  margin: 10px;
+  margin: 15px;
   font-family: 'Roboto Mono';
 }

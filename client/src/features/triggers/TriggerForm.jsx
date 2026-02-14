@@ -23,7 +23,7 @@ function TriggerForm({onSuccess}){
         validateOnChange: true,
         onSubmit: async (values, {resetForm}) => {
             try {
-                await dispatch(createTrigger(values));
+                dispatch(createTrigger(values));
                 setSuccessMessage("Trigger added successfully");
                 resetForm();
                 setIsSubmitted(true);
@@ -32,7 +32,7 @@ function TriggerForm({onSuccess}){
         }
     });
 
-    useEffect(() => { // close the form if opened as modal
+    useEffect(() => { // close the form modal after successful submit
         if (isSubmitted){
             const timer = setTimeout(() => {
                 if (onSuccess) onSuccess();

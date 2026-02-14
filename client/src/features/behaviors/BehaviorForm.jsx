@@ -96,7 +96,7 @@ function BehaviorForm({onSuccess}) {
 
                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
 
-                <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Add Behavior</button>
+                <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit</button>
             </form>
         </div>
     )

@@ -22,7 +22,7 @@ function LoginForm() {
         validateOnChange: true,
         onSubmit: async (values, {setErrors, setFieldValue}) => {
 
-            const resultAction = await dispatch(loginUser(values));
+            const resultAction = dispatch(loginUser(values));
 
             if (loginUser.rejected.match(resultAction)) {
                 if (resultAction.payload?.login) {

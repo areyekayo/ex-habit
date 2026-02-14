@@ -26,7 +26,7 @@ function BehaviorCollection() {
     }
     if (behaviorsForUser.length === 0){
         return (
-            <div>
+            <div className="collection">
                 <h2>Your Behaviors</h2>
                 <p>You don't have any behaviors yet. Add an entry using a behavior.</p>
             </div>)

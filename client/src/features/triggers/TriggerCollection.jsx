@@ -14,7 +14,7 @@ function TriggerCollection() {
         return <div>Error: {error}</div>
     }
     if (!user || !user.triggerIds?.length) return (
-        <div>
+        <div className="collection">
             <h2>Your Triggers</h2>
             <p>You don't have any triggers yet. Add one above.</p>
         </div>

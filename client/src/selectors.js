@@ -5,11 +5,14 @@ import { selectBehaviorById } from "./features/behaviors/behaviorSlice";
 export const selectTriggerWithBehaviors = (triggerId) => createSelector(
     // Gets a trigger and its associated behaviors, behavior IDs, and entry IDs
     state => selectTriggerById(state, triggerId),
-    (state) => state.user.triggers.entities[triggerId]?.entryIds || [],
-    (state) => state.user.triggers.entities[triggerId]?.behaviorIds || [],
+    (state) => state.user.triggers.entities[triggerId]?.entryIds,
+    (state) => state.user.triggers.entities[triggerId]?.behaviorIds,
     state => state.behaviors.entities,
     (trigger, entryIds, behaviorIds, behaviorEntities,) => {
         if (!trigger) return null;
+
+        const stableEntryIds = entryIds || null;
+        const stableBehaviorIds = behaviorIds || null;
 
         const behaviors = (trigger.behaviorIds || [])
         .map(id => behaviorEntities[id])
@@ -18,8 +21,8 @@ export const selectTriggerWithBehaviors = (triggerId) => createSelector(
         return {
             ...trigger,
             behaviors,
-            entryIds,
-            behaviorIds,
+            entryIds: stableEntryIds,
+            behaviorIds: stableBehaviorIds,
         }
     }
 )
