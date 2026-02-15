@@ -8,7 +8,6 @@ function NestedTriggerCard({trigger, behaviorId}){
 
     const triggerWithEntries = useSelector(selectTriggerWithEntries);
 
-
     if (!trigger) return <div>Trigger not found</div>
 
     return (
@@ -30,7 +29,6 @@ function NestedTriggerCard({trigger, behaviorId}){
                 ) : (
                     <p>No entries</p>
                 ) }
-
             </div>
         </>
     )

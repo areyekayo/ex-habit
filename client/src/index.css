@@ -44,6 +44,13 @@ p {
   justify-content: center;
 }
 
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 a {
   color:#17729f;
 }
@@ -59,7 +66,6 @@ a {
   display: inline-grid;
   margin: 20px auto;
   box-shadow: 3px 4px #000000;
-  overflow: scroll;
 }
 
 .new-entry-form {

@@ -77,82 +77,83 @@ function EntryCard(){
     if (!entry) return <div>Entry not found</div>
 
     return (
-        <div className="collection">
-        <h3>Habit Loop Entry</h3>
-        <div className="card">
-            <h4>{entry.created_timestamp}</h4>
-            <p>Trigger: {trigger.name}</p>
-            <p>Behavior: {behavior.name}</p>
-            <p>Reward: {entry.reward}</p>
-            <p>Result: {entry.result}</p>
-            <p>Mood: {entry.mood}</p>
-            <p>{entry.description}</p>
+        <div className="centered-container">
+            <div className="card">
+                <h4>{trigger.name} and {behavior.name} Habit Loop on {entry.created_timestamp}</h4>
+                <p>Reward: {entry.reward}</p>
+                <p>Result: {entry.result}</p>
+                <p>Mood: {entry.mood}</p>
+                <p>{entry.description}</p>
 
-            <div className="button-container">
-                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
+                <div className="button-container">
+                    <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
 
-                <button onClick={handleDelete}>Delete</button>
+                    <button onClick={handleDelete}>Delete</button>
+                </div>
             </div>
-
-            {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
             {showUpdateForm ? (
-                <div>
+                <div className="new-entry-form">
                     <form onSubmit={formik.handleSubmit}>
                         <h4>Update Entry</h4>
-                        <p>Describe what happened when you engaged in this habit loop</p>
-                        <textarea 
-                    placeholder="Describe what happened when you engaged in this habit loop"
-                    name="description"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.description} 
-                />
+                        <div className="form-section">
+                            <p>Describe what happened when you engaged in this habit loop</p>
+                            <textarea 
+                                placeholder="Describe what happened when you engaged in this habit loop"
+                                name="description"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.description} 
+                            />
+                        </div>
                  {formik.errors.description && <p style={{color: "red"}}>{formik.errors.description}</p>}
 
-                <h4>Reward</h4>
-                <p>What was rewarding about this habit loop?</p>
-                <input
-                    type="text"
-                    name="reward"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.reward}
-                />
-
-                <h4>Result</h4>
-                <p>What was the result of this habit loop?</p>
-                <input 
-                    type="text"
-                    name="result"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.result}
+                <div className="form-section">
+                    <h4>Reward</h4>
+                    <p>What was rewarding about this habit loop?</p>
+                    <input
+                        type="text"
+                        name="reward"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.reward}
                     />
+                </div>
+                <div className="form-section">
+                    <h4>Result</h4>
+                    <p>What was the result of this habit loop?</p>
+                    <input 
+                        type="text"
+                        name="result"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.result}
+                    />
+                </div>
+                <div className="form-section">
+                    <h4>Mood</h4>
+                    <p>How do you feel about this habit loop?</p>
+                    <select
+                        name="mood"
+                        value={formik.values.mood}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                    >
+                        <option value="" disabled>Select a mood</option>
+                        <option value="Struggling">Struggling</option>
+                        <option value="Bad">Bad</option>
+                        <option value="Okay">Okay</option>
+                        <option value="Good">Good</option>
+                        <option value="Great">Great</option>
 
-                <h4>Mood</h4>
-                <p>How do you feel about this habit loop?</p>
-                <select
-                    name="mood"
-                    value={formik.values.mood}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                >
-                    <option value="" disabled>Select a mood</option>
-                    <option value="Struggling">Struggling</option>
-                    <option value="Bad">Bad</option>
-                    <option value="Okay">Okay</option>
-                    <option value="Good">Good</option>
-                    <option value="Great">Great</option>
-
-                    </select>
-                {formik.errors.mood && <p style={{color: "red"}}>{formik.errors.mood}</p>}
-
+                        </select>
+                    {formik.errors.mood && <p style={{color: "red"}}>{formik.errors.mood}</p>}
+                </div>
+                 {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit Entry</button>
 
-                    </form>
+                </form>
                 </div>
             ) : (<></>)}
-        </div>
         </div>
     )
     
