@@ -8,13 +8,14 @@ import Modal from "../../components/Modal";
 import TriggerForm from "../triggers/TriggerForm";
 import BehaviorForm from "../behaviors/BehaviorForm";
 
-function EntryForm({initialTriggerId = "", initialBehaviorId = ""}){
+function EntryForm({initialTriggerId = "", initialBehaviorId = "", onSuccess}){
     const dispatch = useDispatch();
     const [successMessage, setSuccessMessage] = useState("");
     const triggers = useSelector(selectAllTriggers);
     const behaviors = useSelector(selectAllBehaviors);
     const [showTriggerModal, setShowTriggerModal] = useState(false);
     const [showBehaviorModal, setShowBehaviorModal] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false)
 
     const openTriggerModal = () => setShowTriggerModal(true);
     const closeTriggerModal = () => setShowTriggerModal(false);
@@ -58,6 +59,7 @@ function EntryForm({initialTriggerId = "", initialBehaviorId = ""}){
                 await dispatch(addEntry(values)).unwrap();
                 setSuccessMessage("Entry added successfully");
                 resetForm();
+                setIsSubmitted(true);
             }
             catch (error) {console.error("Form submission failed", error)}
         }
@@ -71,6 +73,16 @@ function EntryForm({initialTriggerId = "", initialBehaviorId = ""}){
             formik.setFieldValue("behavior", initialBehaviorId);
         }
     }, [initialTriggerId, initialBehaviorId])
+
+    useEffect(() => { // close the form on successful submit
+        if (isSubmitted) {
+            const timer = setTimeout(() => {
+                if (onSuccess) onSuccess();
+                setSuccessMessage(false);
+            }, 3000);
+            return () => clearTimeout(timer)
+        }
+    }, [isSubmitted, onSuccess])
 
     return (
         <div className="new-entry-form">
@@ -172,7 +184,7 @@ function EntryForm({initialTriggerId = "", initialBehaviorId = ""}){
                 {formik.errors.mood && <p style={{color: "red"}}>{formik.errors.mood}</p>}
                 </div>
 
-                {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
+                {successMessage && <p style={{color: "green"}}>{successMessage}. Closing the form...</p>}
 
                 <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit Entry</button>
 

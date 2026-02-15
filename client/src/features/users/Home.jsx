@@ -9,10 +9,10 @@ import { selectUser } from "./userSlice";
 
 function Home() {
     const user = useSelector(selectUser)
-    const [modalContent, setModalContent] = useState(null)
+    const [showTriggerModal, setShowTriggerModal] = useState(false);
 
-    const openTriggerForm = () => setModalContent("trigger");
-    const closeModal = () => setModalContent(null);
+    const openTriggerModal = () => setShowTriggerModal(true);
+    const closeTriggerModal = () => setShowTriggerModal(false);
 
     const [showEntryForm, setShowEntryForm] = useState(false);
 
@@ -28,18 +28,15 @@ function Home() {
                 ) : (
                     <>
                         <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
-                        <button onClick={openTriggerForm}>Add Trigger</button>
+                        <button onClick={openTriggerModal}>Add Trigger</button>
                     </>
                 )}
 
             </div>
-            {modalContent && (
-                <Modal isOpen={true} onClose={closeModal}>
-                    {modalContent === "trigger" && <TriggerForm onSuccess={closeModal} />}
-
-                </Modal>
-            )}
-
+            <Modal isOpen={showTriggerModal} onClose={closeTriggerModal}>
+                <TriggerForm onSuccess={closeTriggerModal} />
+            </Modal>
+        
             {showEntryForm ? (
                 <EntryForm />
                 ) : (null)}

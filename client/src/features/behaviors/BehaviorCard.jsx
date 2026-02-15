@@ -15,6 +15,8 @@ function BehaviorCard(){
 
     const triggers = useSelector(selectTriggers);
     const [showEntryForm, setShowEntryForm] = useState(false);
+    const openEntryForm = () => setShowEntryForm(true);
+    const closeEntryForm = () => setShowEntryForm(false);
 
     if (!behavior) return <p>Behavior not found</p>
     return (
@@ -23,14 +25,14 @@ function BehaviorCard(){
             <p>{behavior.description}</p>
             <div className="button-container">
                 {showEntryForm ? (
-                    <button onClick={() => setShowEntryForm(!showEntryForm)}>Hide Entry Form</button>
+                    <button onClick={closeEntryForm}>Hide Entry Form</button>
                 ) : (
                     <>
-                        <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
+                        <button onClick={openEntryForm}>Add Entry</button>
                     </>)}
             </div>
             {showEntryForm ? (
-                <EntryForm initialBehaviorId={behaviorId} />
+                <EntryForm initialBehaviorId={behaviorId} onSuccess={closeEntryForm} />
                 ) : (null)}
             <div className="collection">
                 <h3>Related Triggers</h3>

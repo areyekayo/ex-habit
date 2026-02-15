@@ -20,6 +20,9 @@ function TriggerCard(){
     const navigate = useNavigate()
     const [showEntryForm, setShowEntryForm] = useState(false);
 
+    const openEntryForm = () => setShowEntryForm(true);
+    const closeEntryForm = () => setShowEntryForm(false);
+
     const handleDelete = async () => {
         try {
             await dispatch(deleteTrigger(trigger)).unwrap();
@@ -74,39 +77,47 @@ function TriggerCard(){
             <p>{trigger.description}</p>
             <div className="button-container">
                 {showEntryForm ? (
-                    <button onClick={() => setShowEntryForm(!showEntryForm)}>Hide Entry Form</button>
+                    <button onClick={closeEntryForm}>Hide Entry Form</button>
                 ) : (
                     <>
-                        <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
+                        {showUpdateForm ? (
+                            <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Hide Update Form</button>
+                        ) : (
+                            <>
+                                <button onClick={openEntryForm}>Add Entry</button>
+                            
+                                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit Trigger</button>
 
-                        <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit Trigger</button>
-
-                        <button onClick={handleDelete}>Delete Trigger</button>
+                                <button onClick={handleDelete}>Delete Trigger</button>
+                            </>
+                        )}
                     </>
                 )}
             </div>
 
-            {successMessage && <p style={{color: "green"}}>{successMessage}</p>}
             {showUpdateForm ? (
                 <div className="new-entry-form">
                     <form onSubmit={formik.handleSubmit}>
-                        <h4>Update Trigger Name</h4>
-                        <input
-                            type="text"
-                            name="name"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.name}/>
-                        {formik.errors.name && <p style={{color: "red"}}>{formik.errors.name}</p>}
-
-                        <h4>Description</h4>
-                        <textarea 
-                            placeholder="Describe the trigger"
-                            name="description"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.description}/>
-
+                        <div className="form-section">
+                            <h4>Update Trigger Name</h4>
+                            <input
+                                type="text"
+                                name="name"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.name}/>
+                            {formik.errors.name && <p style={{color: "red"}}>{formik.errors.name}</p>}
+                        </div>
+                            <div className="form-section">
+                            <h4>Description</h4>
+                            <textarea 
+                                placeholder="Describe the trigger"
+                                name="description"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.description}/>
+                        </div>
+                        {successMessage && <p style={{color: "green"}}>{successMessage}. Closing the form...</p>}
                         <button type="submit" disabled={!formik.isValid || formik.isSubmitting}>Submit</button>
                     </form>
                 </div>
@@ -114,7 +125,7 @@ function TriggerCard(){
             }
 
              {showEntryForm ? (
-                <EntryForm initialTriggerId={triggerId} />
+                <EntryForm initialTriggerId={triggerId} onSuccess={closeEntryForm} />
                 ) : (null)}
 
             <div className="collection">
