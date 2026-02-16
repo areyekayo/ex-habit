@@ -22,7 +22,7 @@ function NavBar() {
         <nav>
             <NavLink className="nav-link" to="/home">Home</NavLink>
             {isAuthenticated ? (
-                <button className="nav-link" onClick={handleLogout}>Logout</button>
+                <NavLink className="nav-link" onClick={handleLogout}>Logout</NavLink>
             )
                 : (<NavLink className="nav-link" to="/login">Login</NavLink>)
             }

@@ -91,12 +91,18 @@ a {
 
 .new-entry-form textarea {
   height: 7rem;
-  font-size: 100%;
 }
 
 .new-entry-form input {
   height: 2rem;
-  font-size: 100%;
+}
+
+.new-entry-form input,
+.new-entry-form textarea,
+.new-entry-form select {
+  width: 50%;
+  align-self: center;
+  font-size: 80%;
 }
 
 .new-entry-form form h3,
@@ -115,11 +121,15 @@ a {
   text-align: center;
   font-family: 'Roboto Mono';
   font-size: 80%;
+  width: 50%;
+  align-self: center;
 }
 
 .new-entry-form form button[type="button"] {
   margin-top: 1rem;
   margin-bottom: 1rem;
+  width: 50%;
+  align-self: center;
 }
 
 .form-section {
@@ -171,7 +181,8 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+button:hover,
+.nav-link:hover {
   background-color: #61dafb
 }
 

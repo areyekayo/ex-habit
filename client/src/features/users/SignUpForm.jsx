@@ -19,7 +19,7 @@ function SignUpForm() {
         validationSchema: formSchema,
         validateOnChange: true,
         onSubmit: async (values, {setErrors}) => {
-            const resultAction = dispatch(signUpUser(values));
+            const resultAction = await dispatch(signUpUser(values));
 
             if (signUpUser.rejected.match(resultAction)) {
                 if (resultAction.payload.username) {
