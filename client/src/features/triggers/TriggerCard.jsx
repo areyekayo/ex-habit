@@ -86,9 +86,9 @@ function TriggerCard(){
                             <>
                                 <button onClick={openEntryForm}>Add Entry</button>
                             
-                                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit Trigger</button>
+                                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit {trigger.name}</button>
 
-                                <button onClick={handleDelete}>Delete Trigger</button>
+                                <button onClick={handleDelete}>Delete {trigger.name}</button>
                             </>
                         )}
                     </>

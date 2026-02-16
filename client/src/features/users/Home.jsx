@@ -10,11 +10,13 @@ import { selectUser } from "./userSlice";
 function Home() {
     const user = useSelector(selectUser)
     const [showTriggerModal, setShowTriggerModal] = useState(false);
+    const [showEntryForm, setShowEntryForm] = useState(false);
 
     const openTriggerModal = () => setShowTriggerModal(true);
     const closeTriggerModal = () => setShowTriggerModal(false);
+    const openEntryForm = () => setShowEntryForm(true);
+    const closeEntryForm = () => setShowEntryForm(false);
 
-    const [showEntryForm, setShowEntryForm] = useState(false);
 
     if (!user) return <div>Loading user...</div>
 
@@ -24,10 +26,10 @@ function Home() {
             : (null)}
             <div className="button-container">
                 {showEntryForm ? (
-                    <button onClick={() => setShowEntryForm(!showEntryForm)}>Hide Entry Form</button>
+                    <button onClick={closeEntryForm}>Hide Entry Form</button>
                 ) : (
                     <>
-                        <button onClick={() => setShowEntryForm(!showEntryForm)}>Add Entry</button>
+                        <button onClick={openEntryForm}>Add Entry</button>
                         <button onClick={openTriggerModal}>Add Trigger</button>
                     </>
                 )}
@@ -38,7 +40,7 @@ function Home() {
             </Modal>
         
             {showEntryForm ? (
-                <EntryForm />
+                <EntryForm onSuccess={closeEntryForm}/>
                 ) : (null)}
 
             <BehaviorCollection />
