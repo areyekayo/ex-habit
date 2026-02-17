@@ -94,13 +94,13 @@ a {
 }
 
 .new-entry-form input {
-  height: 2rem;
+  height: 1rem;
 }
 
 .new-entry-form input,
 .new-entry-form textarea,
 .new-entry-form select {
-  width: 50%;
+  width: 75%;
   align-self: center;
   font-size: 80%;
 }

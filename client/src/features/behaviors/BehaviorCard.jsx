@@ -35,7 +35,7 @@ function BehaviorCard(){
                 <EntryForm initialBehaviorId={behaviorId} onSuccess={closeEntryForm} />
                 ) : (null)}
             <div className="collection">
-                <h3>Related Triggers</h3>
+                <h3>Your {behavior.name} Related Triggers</h3>
                 {triggers.length === 0 && <p>No triggers associated with this behavior</p>}
                 {triggers.map((trigger) => (
                     <NestedTriggerCard key={trigger.id} trigger={trigger} behaviorId={behavior.id}/>

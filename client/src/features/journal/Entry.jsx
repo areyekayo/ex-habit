@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { useFormik } from "formik";
@@ -79,7 +79,7 @@ function EntryCard(){
     return (
         <div className="centered-container">
             <div className="card">
-                <h4>{trigger.name} and {behavior.name} Habit Loop on {entry.created_timestamp}</h4>
+                <h4><Link to={`/triggers/${trigger.id}`}>{trigger.name}</Link> and <Link to={`/behaviors/${behavior.id}`}>{behavior.name}</Link> Habit Loop Entry on {entry.created_timestamp}</h4>
                 <p>Reward: {entry.reward}</p>
                 <p>Result: {entry.result}</p>
                 <p>Mood: {entry.mood}</p>

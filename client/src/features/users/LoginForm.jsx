@@ -24,8 +24,6 @@ function LoginForm() {
 
             const resultAction = await dispatch(loginUser(values));
 
-            console.log('result action', resultAction.payload)
-
             if (loginUser.rejected.match(resultAction)) {
                 if (resultAction.payload?.login) {
                     setErrors({login: resultAction.payload.login[0]});

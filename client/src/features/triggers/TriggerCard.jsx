@@ -24,6 +24,10 @@ function TriggerCard(){
     const closeEntryForm = () => setShowEntryForm(false);
 
     const handleDelete = async () => {
+        const confirmed = window.confirm(
+            "Deleting this trigger will also delete any associated entries. Are you sure you want to proceed?"
+        );
+        if (!confirmed) return;
         try {
             await dispatch(deleteTrigger(trigger)).unwrap();
             setIsDeleted(true);
@@ -129,7 +133,7 @@ function TriggerCard(){
                 ) : (null)}
 
             <div className="collection">
-                <h2>Related Habits</h2>
+                <h3>{trigger.name} Related Habits</h3>
                 {trigger.behaviors.length > 0 ? (
                     trigger.behaviors.map((behavior) => (
                         <NestedBehaviorCard key={behavior.id} behavior={behavior} triggerId={trigger.id}/>
