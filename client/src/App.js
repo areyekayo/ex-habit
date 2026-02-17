@@ -1,7 +1,7 @@
 import {useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import NavBar from './components/NavBar';
-import { fetchCurrentUser, logout, selectUser, selectIsAuthenticated } from "./features/users/userSlice";
+import { fetchCurrentUser, selectUser, selectIsAuthenticated } from "./features/users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { fetchBehaviors } from "./features/behaviors/behaviorSlice";

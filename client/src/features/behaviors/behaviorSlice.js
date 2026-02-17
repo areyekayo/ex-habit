@@ -68,6 +68,6 @@ export const {
     selectById: selectBehaviorById,
     selectIds: selectBehaviorIds,
 } = behaviorsAdapter.getSelectors(state => state.behaviors)
-export const {addEntryToBehavior, setAllBehaviors } = behaviorSlice.actions
+export const { setAllBehaviors } = behaviorSlice.actions
 
 export default behaviorSlice.reducer

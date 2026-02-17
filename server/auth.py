@@ -1,5 +1,4 @@
 from flask_login import LoginManager
-from flask import jsonify
 from models import User
 from config import app
 
