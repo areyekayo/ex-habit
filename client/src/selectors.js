@@ -3,26 +3,19 @@ import { selectTriggerById, selectUser, selectAllTriggers, selectAllEntries } fr
 import { selectBehaviorById, selectAllBehaviors } from "./features/behaviors/behaviorSlice";
 
 export const selectTriggerWithBehaviors = (triggerId) => createSelector(
-    // Gets a trigger and its associated behaviors, behavior IDs, and entry IDs
+    // Gets a trigger and its associated behaviors
     state => selectTriggerById(state, triggerId),
-    (state) => state.user.triggers.entities[triggerId]?.entryIds,
-    (state) => state.user.triggers.entities[triggerId]?.behaviorIds,
     state => state.behaviors.entities,
-    (trigger, entryIds, behaviorIds, behaviorEntities,) => {
+    (trigger, behaviorEntities,) => {
         if (!trigger) return null;
 
-        const stableEntryIds = entryIds || null;
-        const stableBehaviorIds = behaviorIds || null;
-
-        const behaviors = (trigger.behaviorIds || [])
+        const behaviors = (trigger.behaviorIds)
         .map(id => behaviorEntities[id])
         .filter(Boolean);
 
         return {
             ...trigger,
-            behaviors,
-            entryIds: stableEntryIds,
-            behaviorIds: stableBehaviorIds,
+            behaviors
         }
     }
 )
@@ -45,7 +38,7 @@ export const selectBehaviorWithEntriesByTrigger = (behaviorId, triggerId) =>
 export const selectBehaviorsForUser = createSelector(
     // Gets a user's behaviors associated with their entries
     selectUser,
-    (state) => selectAllBehaviors(state),
+    selectAllBehaviors,
     (user, behaviorEntities) => {
         if (!user || !user.behaviorIds) return [];
         return user.behaviorIds.map(id => behaviorEntities[id]).filter(Boolean);
@@ -58,18 +51,3 @@ export const selectTriggersForBehavior = (behaviorId) => createSelector(
     (triggers) => Object.values(triggers).filter(
         (trigger) => trigger.behaviorIds && trigger.behaviorIds.includes(behaviorId))
 )
-
-export const selectTriggerWithEntriesByBehavior = (behaviorId, triggerId) =>
-    createSelector(
-        // Gets a trigger and its entries associated with a behavior
-        state => selectTriggerById(state, triggerId),
-        state => selectAllEntries(state),
-        (trigger, entryEntities) => {
-            if(!trigger) return null;
-
-            const entries = Object.values(entryEntities).filter(
-                entry => entry.trigger_id == trigger.id && entry.behavior_id == behaviorId
-            );
-            return {trigger, entries}
-        }
-    )
