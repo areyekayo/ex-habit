@@ -5,13 +5,15 @@ import { selectBehaviorById, selectAllBehaviors } from "./features/behaviors/beh
 export const selectTriggerWithBehaviors = (triggerId) => createSelector(
     // Gets a trigger and its associated behaviors
     state => selectTriggerById(state, triggerId),
-    state => state.behaviors.entities,
-    (trigger, behaviorEntities,) => {
+    state => selectAllBehaviors(state),
+    (trigger, behaviorsArray) => {
         if (!trigger) return null;
 
+        const behaviorMap = Object.fromEntries(behaviorsArray.map(b => [b.id, b]));
+
         const behaviors = (trigger.behaviorIds)
-        .map(id => behaviorEntities[id])
-        .filter(Boolean);
+            .map(id => behaviorMap[id])
+            .filter(Boolean);
 
         return {
             ...trigger,
@@ -29,7 +31,7 @@ export const selectBehaviorWithEntriesByTrigger = (behaviorId, triggerId) =>
             if (!behavior) return null;
 
             const entries = Object.values(entryEntities).filter(
-                entry => entry.behavior_id == behavior.id && entry.trigger_id == triggerId
+                entry => entry.behavior_id === behavior.id && entry.trigger_id === triggerId
             );
             return {behavior, entries}
         }
