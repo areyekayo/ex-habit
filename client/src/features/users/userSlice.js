@@ -378,8 +378,8 @@ const userSlice = createSlice({
                     }
                 }
                 // check if the associated behavior is used in other entries
-                const behaviorStillExists = trigger.entryIds.some(entryId => {
-                    const entry = state.entries.entities[entryId];
+                const behaviorStillExists = state.entries.ids.some(id => {
+                    const entry = state.entries.entities[id];
                     return entry && entry.behavior_id === behaviorId
                 })
                 if (!behaviorStillExists) { //if no entry uses the behavior, remove the behavior Id from trigger and user

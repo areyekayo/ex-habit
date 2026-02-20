@@ -45,7 +45,7 @@ export const selectBehaviorsForUser = createSelector(
     selectAllBehaviors,
     (user, behaviorEntities) => {
         if (!user || !user.behaviorIds) return [];
-        return user.behaviorIds.map(id => behaviorEntities[id]).filter(Boolean);
+        return behaviorEntities.filter(behavior => user.behaviorIds.includes(behavior.id))
     }
 )
 
