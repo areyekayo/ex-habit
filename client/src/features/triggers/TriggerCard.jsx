@@ -62,7 +62,7 @@ function TriggerCard(){
                     description: values.description
                 }
                 await dispatch(updateTrigger(updatedTrigger)).unwrap();
-                setSuccessMessage("Trigger added successfully");
+                setSuccessMessage("Trigger updated successfully. Closing the form...");
                 setTimeout(() => setSuccessMessage(""), 4000);
                 setTimeout(() => setShowUpdateForm(false), 4000);
             }
@@ -90,9 +90,9 @@ function TriggerCard(){
                             <>
                                 <button onClick={openEntryForm}>Add Entry</button>
                             
-                                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit {trigger.name}</button>
+                                <button onClick={() => setShowUpdateForm(!showUpdateForm)}>Edit</button>
 
-                                <button onClick={handleDelete}>Delete {trigger.name}</button>
+                                <button onClick={handleDelete}>Delete</button>
                             </>
                         )}
                     </>

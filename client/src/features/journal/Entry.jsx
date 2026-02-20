@@ -61,7 +61,7 @@ function EntryCard(){
                     result: values.result
                 }
                 await dispatch(updateEntry(updatedEntry)).unwrap();
-                setSuccessMessage("Entry updated successfully");
+                setSuccessMessage("Entry updated successfully. Closing the form...");
                 setTimeout(() => setSuccessMessage(""), 3000);
                 setTimeout(() => setShowUpdateForm(false), 3000);
                 

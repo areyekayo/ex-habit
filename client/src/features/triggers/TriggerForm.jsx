@@ -24,7 +24,7 @@ function TriggerForm({onSuccess}){
         onSubmit: async (values, {resetForm}) => {
             try {
                 dispatch(createTrigger(values));
-                setSuccessMessage("Trigger added successfully");
+                setSuccessMessage("Trigger added successfully. Closing the form...");
                 resetForm();
                 setIsSubmitted(true);
             }

@@ -27,7 +27,7 @@ function BehaviorForm({onSuccess}) {
             
             try {
                 await dispatch(addBehavior(values)).unwrap();
-                setSuccessMessage("Behavior added successfully")
+                setSuccessMessage("Behavior added successfully. Closing the form...")
                 resetForm();
                 setIsSubmitted(true);
             }

@@ -11,8 +11,6 @@ function BehaviorCollection() {
 
     const behaviorsForUser = useSelector(selectBehaviorsForUser);
 
-    console.log('behaviors for user in behavior collection:', behaviorsForUser)
-
     useEffect(() => {
         if (status === 'idle') {
             dispatch(fetchBehaviors());
