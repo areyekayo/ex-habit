@@ -72,7 +72,7 @@ function EntryForm({initialTriggerId = "", initialBehaviorId = "", onSuccess}){
         if (initialBehaviorId) {
             formik.setFieldValue("behavior", initialBehaviorId);
         }
-    }, [initialTriggerId, initialBehaviorId, formik])
+    }, [initialTriggerId, initialBehaviorId])
 
     useEffect(() => { // close the form on successful submit
         if (isSubmitted) {
