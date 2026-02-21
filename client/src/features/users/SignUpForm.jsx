@@ -25,8 +25,9 @@ function SignUpForm() {
                 if (resultAction.payload.username) {
                     setErrors({username: resultAction.payload.username[0]});
                 }
-            } else {
-                setErrors({username: resultAction.error.message || "Signup failed"})
+            } 
+            else {
+                setErrors({})
             }
         }
     })

@@ -62,8 +62,8 @@ class Behavior(db.Model):
     
     @validates('name')
     def validate_name(self, key, name):
-        if not (5 <= len(name) <= 100):
-            raise ValueError("Name must be between 5 and 100 characters")
+        if not (3 <= len(name) <= 100):
+            raise ValueError("Name must be between 3 and 100 characters")
         return name
     
 class Trigger(db.Model):
@@ -83,8 +83,8 @@ class Trigger(db.Model):
     
     @validates('name')
     def validate_name(self, key, name):
-        if not (5 <= len(name) <= 100):
-            raise ValueError("Name must be between 5 and 100 characters")
+        if not (3 <= len(name) <= 100):
+            raise ValueError("Name must be between 3 and 100 characters")
         return name
 
 class Entry(db.Model):

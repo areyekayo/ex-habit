@@ -10,7 +10,7 @@ function BehaviorForm({onSuccess}) {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const formSchema = yup.object().shape({
-        name: yup.string().required("Enter a name for the behavior").min(5, "Name must be at least 5 characters").max(100, "Name must be less than 100 characters"),
+        name: yup.string().required("Enter a name for the behavior").min(3, "Name must be at least 3 characters").max(100, "Name must be less than 100 characters"),
         description: yup.string().required("Description is required."),
         type: yup.string().required("Type is required.")
     });
