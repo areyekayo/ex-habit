@@ -376,14 +376,21 @@ const userSlice = createSlice({
                     if (existingEntryIds.includes(entryId)){
                         trigger.entryIds = existingEntryIds.filter(id => id !== entryId)
                     }
+                    // check trigger's entries for the behavior. if no entry uses the behavior, remove behavior from the trigger
+                    const triggerStillHasBehavior = trigger.entryIds.some(id =>  {
+                            const entry = state.entries.entities[id];
+                            return entry && entry.behavior_id === behaviorId
+                        })
+                    if (!triggerStillHasBehavior) {
+                        trigger.behaviorIds = trigger.behaviorIds.filter(id => id !== behaviorId)
+                    }
                 }
                 // check if the associated behavior is used in other entries
                 const behaviorStillExists = state.entries.ids.some(id => {
                     const entry = state.entries.entities[id];
                     return entry && entry.behavior_id === behaviorId
                 })
-                if (!behaviorStillExists) { //if no entry uses the behavior, remove the behavior Id from trigger and user
-                    trigger.behaviorIds = trigger.behaviorIds.filter(id => id !== behaviorId)
+                if (!behaviorStillExists) { //if no entry uses the behavior, remove the behavior Id from user
                     state.user.behaviorIds = state.user.behaviorIds.filter(id => id !== behaviorId)
                 }
             })
