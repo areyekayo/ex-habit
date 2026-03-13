@@ -6,16 +6,14 @@ export const selectTriggerWithBehaviors = (triggerId) => createSelector(
     // Gets a trigger and its associated behaviors
     state => selectTriggerById(state, triggerId),
     state => selectAllBehaviors(state),
-    (trigger, behaviorsArray) => {
+    (trigger, behaviorEntities) => {
         if (!trigger) return null;
 
-        const behaviorMap = Object.fromEntries(behaviorsArray.map(b => [b.id, b]));
+        const behaviorMap = Object.fromEntries(behaviorEntities.map(b => [b.id, b]));
 
         if (!trigger.behaviorIds) return trigger
 
-        const behaviors = (trigger.behaviorIds)
-            .map(id => behaviorMap[id])
-            .filter(Boolean);
+        const behaviors = trigger.behaviorIds.map(id => behaviorMap[id])
 
         return {
             ...trigger,

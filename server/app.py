@@ -6,10 +6,6 @@ from flask_login import login_user, login_required, current_user, logout_user
 from auth import login_manager
 from models import User, Behavior, Trigger, Entry
 
-@app.route('/')
-def index():
-    return '<h1>Project Server</h1>'
-
 class EntrySchema(ma.SQLAlchemySchema):
     class Meta:
         model = Entry
@@ -63,7 +59,7 @@ class BehaviorSchema(ma.SQLAlchemySchema):
     triggers = ma.Method("get_nested_trigger_entries")
 
     def get_nested_trigger_entries(self, behavior_obj):
-        # Function to retrieve triggers with entries that match the parent behavior
+        # Gets triggers with entries that match the parent behavior
         if behavior_obj is None or behavior_obj.triggers is None:
             return []
         triggers = []
@@ -119,7 +115,7 @@ class TriggerSchema(ma.SQLAlchemySchema):
     behaviors = ma.Method("get_nested_behavior_entries")
 
     def get_nested_behavior_entries(self, trigger_obj):
-        # Function to get behaviors that match the user and parent trigger
+        # Gets behaviors that match the user and parent trigger
         if trigger_obj is None or trigger_obj.behaviors is None:
             return []
         behaviors = []
